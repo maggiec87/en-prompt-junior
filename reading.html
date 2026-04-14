@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阅读理解 · AI英语工具集</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#100e14;--bg2:#161320;--bg3:#1c1928;
+  --surface:#221f30;--surface2:#2a2740;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e4e0f0;--text2:#968fa8;--text3:#635c78;
+  --accent:#c084fc;--accent2:rgba(192,132,252,0.13);
+  --teal:#34d399;--teal2:rgba(52,211,153,0.12);
+  --coral:#fb923c;--coral2:rgba(251,146,60,0.12);
+  --blue:#60a5fa;--blue2:rgba(96,165,250,0.12);
+}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+.suite-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.suite-logo{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;padding:14px 20px 14px 0;border-right:1px solid var(--border);white-space:nowrap;margin-right:16px}
+.suite-link{padding:14px 14px;font-size:12px;color:var(--text3);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-weight:500}
+.suite-link:hover{color:var(--text)}.suite-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+.hero{padding:56px 40px 48px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'READING';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:120px;font-weight:900;color:rgba(192,132,252,0.04);line-height:1;pointer-events:none;letter-spacing:-4px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--accent);margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.15;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:14px;color:var(--text2);max-width:500px}
+.hero-stats{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap}
+.hstat{border-left:2px solid var(--accent);padding-left:12px}
+.hstat-n{font-family:'DM Mono',monospace;font-size:24px;color:var(--accent)}
+.hstat-l{font-size:11px;color:var(--text3);margin-top:2px}
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 18px;font-size:13px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:'Noto Sans SC',sans-serif}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+main{max-width:860px;margin:0 auto;padding:40px 24px 80px}
+.panel{display:none}.panel.active{display:block}
+.sec-head{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--accent);margin-bottom:8px}
+.sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text2)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;white-space:nowrap}
+.ba{background:var(--accent2);color:var(--accent)}
+.bt{background:var(--teal2);color:var(--teal)}
+.bc{background:var(--coral2);color:var(--coral)}
+.bb{background:var(--blue2);color:var(--blue)}
+.card-title{font-size:14px;font-weight:700;color:var(--text)}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.prompt-wrap{margin-top:14px;border-top:1px dashed var(--border);padding-top:14px}
+.prompt-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:8px}
+.prompt-box{background:#0c0a12;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;color:#c0b8d8;white-space:pre-wrap;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--border2);color:var(--text3);padding:4px 10px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--accent)}.copy-btn.ok{color:var(--teal);border-color:rgba(52,211,153,0.3)}
+.tip{background:var(--accent2);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--accent);margin-bottom:16px;line-height:1.6}
+.warn{background:var(--coral2);border-left:2px solid var(--coral);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--coral);margin-bottom:16px;line-height:1.6}
+.type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:16px 0}
+.type-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:border-color .2s}
+.type-card:hover{border-color:var(--accent)}
+.type-icon{font-family:'DM Mono',monospace;font-size:20px;color:var(--accent);line-height:1;margin-bottom:6px}
+.type-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.type-desc{font-size:11px;color:var(--text3);line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--text3);background:var(--surface)}
+.r-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
+.r-table th{background:var(--surface);color:var(--text2);font-weight:500;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.r-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.r-table td:first-child{color:var(--accent);font-weight:700;white-space:nowrap;font-size:12px}
+.r-table tr:last-child td{border-bottom:none}
+footer{text-align:center;padding:28px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);font-family:'DM Mono',monospace}
+@media(max-width:600px){.hero{padding:36px 20px 32px}.hero::before{font-size:80px}main{padding:28px 16px 60px}.suite-nav,.tab-bar{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<nav class="suite-nav">
+  <div class="suite-logo">AI英语工具集</div>
+  <a class="suite-link" href="grammar.html">语法</a>
+  <a class="suite-link" href="writing.html">写作</a>
+  <a class="suite-link" href="listening.html">听力</a>
+  <a class="suite-link active" href="reading.html">阅读</a>
+  <a class="suite-link" href="vocab.html">词汇</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">MODULE 04 · READING</div>
+  <h1>阅读理解<span>破题</span><br>AI辅助工具</h1>
+  <p>读懂了还是做错——AI帮你拆解题型逻辑、找出做题盲区，让阅读分数稳定提升</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">11</div><div class="hstat-l">套 Prompt 模板</div></div>
+    <div class="hstat"><div class="hstat-n">5</div><div class="hstat-l">核心题型</div></div>
+    <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">训练层次</div></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview')">总览</button>
+  <button class="tab-btn" onclick="showTab('types')">题型拆解</button>
+  <button class="tab-btn" onclick="showTab('strategy')">做题策略</button>
+  <button class="tab-btn" onclick="showTab('analysis')">错题分析</button>
+  <button class="tab-btn" onclick="showTab('material')">AI生成题目</button>
+  <button class="tab-btn" onclick="showTab('vocab-in-context')">语境猜词</button>
+</div>
+
+<main>
+
+<div id="overview" class="panel active">
+  <div class="sec-head">
+    <div class="sec-tag">OVERVIEW</div>
+    <div class="sec-title">阅读理解的真正难点</div>
+    <div class="sec-desc">读懂≠做对，做对≠真的懂——三个层次的能力缺一不可</div>
+  </div>
+  <div class="warn">最常见的困境：「每个词都认识，但题目还是做错」。这不是词汇问题，而是「题型逻辑」没有建立——不同题型的答案在文章的不同位置，用不同的方式判断。</div>
+  <div class="type-grid">
+    <div class="type-card">
+      <div class="type-icon">细节</div>
+      <div class="type-title">细节理解题</div>
+      <div class="type-desc">答案在文中，找对位置就得分。最基础也最容易因为粗心失分</div>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">主旨</div>
+      <div class="type-title">主旨大意题</div>
+      <div class="type-desc">考整篇/整段的核心意思，不能只看局部</div>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">推断</div>
+      <div class="type-title">推断判断题</div>
+      <div class="type-desc">答案不在文中，要根据文意「推理」，最难得分的题型</div>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">词义</div>
+      <div class="type-title">词义猜测题</div>
+      <div class="type-desc">通过上下文猜测生词含义，有固定方法</div>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">态度</div>
+      <div class="type-title">作者态度题</div>
+      <div class="type-desc">判断作者的观点和态度，需要区分「事实」和「观点」</div>
+    </div>
+  </div>
+  <table class="r-table">
+    <tr><th>题型</th><th>答案位置</th><th>AI能帮什么</th></tr>
+    <tr><td>细节题</td><td>文中直接找，可能有同义替换</td><td>标出关键词，演示定位方法</td></tr>
+    <tr><td>主旨题</td><td>综合全文，不是某一段</td><td>帮你区分「主题」和「细节」</td></tr>
+    <tr><td>推断题</td><td>文中没有，需要逻辑推理</td><td>演示推理步骤，分析干扰项</td></tr>
+    <tr><td>词义题</td><td>生词周围的语境</td><td>教你猜词的4种方法</td></tr>
+    <tr><td>态度题</td><td>感情色彩词汇，句式选择</td><td>列出判断作者态度的信号词</td></tr>
+  </table>
+</div>
+
+<div id="types" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">TYPES</div>
+    <div class="sec-title">五大题型逐一讲透</div>
+    <div class="sec-desc">每种题型有完全不同的解题逻辑，混用方法是丢分的根源</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt R-01</span><span class="card-title">推断题专项讲解（最难题型）</span></div>
+    <div class="card-desc">推断题是阅读理解最难的题型，因为答案不在文中，但也有规律可循。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r01">请深度讲解英语阅读理解「推断判断题」的做题方法：
+
+【推断题的本质】
+为什么推断题答案「不在文中」？
+「合理推断」和「过度推断」的界限在哪里？
+用一个例子说明：什么样的推断是对的，什么是错的
+
+【推断题的3种类型】
+① 细节推断：从具体描述推出隐含信息
+② 人物推断：从行为/对话推出人物特征/动机
+③ 结局推断：根据文章走向推出可能发生的事
+
+每种类型：
+- 判断方法（一步一步）
+- 典型干扰项特征（哪类选项看起来对但其实错）
+- 一道例题 + 完整解析
+
+【错误选项的特征】
+列出推断题「错误选项」的5种常见类型：
+（如：过于绝对、超出文意、张冠李戴、反向推断）
+
+【练习】
+给我一段150词的阅读材料 + 2道推断题
+出完等我回答，再给解析（重点说「为什么其他选项不对」）<button class="copy-btn" onclick="cp('r01',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">推断题</span><span class="tag">干扰项分析</span><span class="tag">含练习</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt R-02</span><span class="card-title">主旨大意题（整体vs局部）</span></div>
+    <div class="card-desc">主旨题最常见的错误：选了「局部正确但不是主旨」的选项。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r02">请讲解阅读理解「主旨大意题」的解题方法：
+
+【什么是主旨？】
+用一个简单例子说明「主旨」和「细节」的区别
+为什么有些学生会把「局部细节」误认为「主旨」？
+
+【找主旨的3个步骤】
+步骤1：看文章结构（总分？分总？总分总？）
+步骤2：找「主题句」（通常在哪里？）
+步骤3：用自己的话概括，再去选项里找「同义」的
+
+【主旨题的4种错误选项】
+① 以偏概全（只说了文章一部分的内容）
+② 过度概括（比文章说的范围更大）
+③ 细节替换（文章有提到，但只是细节，不是主旨）
+④ 方向相反（文章否定的，选项说是肯定的）
+
+每种类型举一个实例
+
+【标题类主旨题（给文章选标题）】
+好标题的3个特征是什么？
+怎么在4个选项里快速排除？
+
+【练习】
+给我一篇200词的短文 + 2道主旨题
+出完等我回答再解析<button class="copy-btn" onclick="cp('r02',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">主旨题</span><span class="tag">四种错误选项</span><span class="tag">标题选题法</span></div>
+  </div>
+</div>
+
+<div id="strategy" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">STRATEGY</div>
+    <div class="sec-title">整体做题策略</div>
+    <div class="sec-desc">阅读顺序、时间分配、定位技巧，考场上的系统方法</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bc">Prompt R-03</span><span class="card-title">阅读理解完整做题流程</span></div>
+    <div class="card-desc">从拿到题目到最后交卷，每一步该做什么，时间怎么分配。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r03">请给我一套完整的英语阅读理解做题策略：
+
+【我的情况】：[初三/高二，阅读理解得分率约60-70%，主要问题是推断题和主旨题]
+
+请输出：
+
+【第一步：读文章（几分钟？读什么？）】
+先读题还是先读文？（给出明确建议并说明原因）
+读文章时应该标记什么？
+怎么用30秒快速判断文章体裁（记叙/说明/议论）？
+
+【第二步：定位答案（细节题）】
+「题目关键词 → 原文定位 → 同义替换确认」三步法
+关键词选择技巧：选哪类词最容易定位？
+同义替换的常见类型（举5个例子）
+
+【第三步：排除法（所有题型通用）】
+先排除明显错误的选项，剩下的再仔细判断
+「绝对化表达」为什么通常是错的？（never/always/only...）
+
+【时间管理】
+中考：阅读共X分钟，建议每篇用X分钟
+高考：阅读共X分钟，建议每题类型用X分钟
+遇到长文章怎么办？
+
+【考场心态】
+遇到完全不认识的词怎么办？
+某道题想不出来，要不要跳过？<button class="copy-btn" onclick="cp('r03',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">完整流程</span><span class="tag">时间管理</span><span class="tag">排除法</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt R-04</span><span class="card-title">同义替换专项训练（最核心技能）</span></div>
+    <div class="card-desc">阅读理解的核心机制就是「同义替换」——答案从不照抄原文，但意思相同。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r04">请教我阅读理解「同义替换」的识别训练：
+
+【同义替换的类型】
+请列出5种常见同义替换方式，每种3个例子：
+① 同义词替换（purchase → buy）
+② 上义词替换（apple → fruit）
+③ 概括替换（long, exhausting journey → difficult experience）
+④ 结构替换（主动→被动，正面→双重否定）
+⑤ 数字/比例替换（two thirds → most）
+
+【实战练习】
+给我10对「原文句 → 题目/选项句」
+让我判断：这对是「同义替换」还是「意思改变了」？
+判断完之后给解析
+
+【高级：反向替换识别（错误选项）】
+错误选项经常用「相关词汇」迷惑——
+词汇相关但意思不对，如何快速识别？
+给5个例子<button class="copy-btn" onclick="cp('r04',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">同义替换</span><span class="tag">5种类型</span><span class="tag">实战训练</span></div>
+  </div>
+</div>
+
+<div id="analysis" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">ANALYSIS</div>
+    <div class="sec-title">错题深度分析</div>
+    <div class="sec-desc">每道阅读错题背后都有原因，找到原因才能真正提高</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bb">Prompt R-05</span><span class="card-title">单道错题深度解析</span></div>
+    <div class="card-desc">把错题和原文一起发给AI，找出你「错在哪一步」。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r05">请帮我深度分析一道阅读理解错题：
+
+【原文段落】（相关段落，不用全文）：
+[粘贴原文]
+
+【题目】：
+[粘贴题目]
+
+【选项】：
+A. [选项A]
+B. [选项B]
+C. [选项C]
+D. [选项D]
+
+【我的答案】：[填写]
+【正确答案】：[填写]
+
+请按以下步骤分析：
+
+第一步：找到答案在文中的定位
+原文中哪几句话与这道题相关？（引用原文）
+
+第二步：还原我的错误思路
+我为什么会选错的那个选项？（推测我的错误逻辑）
+这个错误选项用了什么「陷阱」来迷惑？
+
+第三步：正确解题过程
+从题目 → 定位 → 判断，一步步演示正确过程
+
+第四步：这道题考察的核心能力
+属于哪种题型？
+我在这道题上缺少哪个能力？（定位力/推断力/同义识别力）
+
+第五步：一道同类型练习题
+出一道相似题让我练习，出完等我回答<button class="copy-btn" onclick="cp('r05',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">单题深析</span><span class="tag">错误思路还原</span><span class="tag">能力定位</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt R-06</span><span class="card-title">批量错题规律诊断</span></div>
+    <div class="card-desc">把一次考试所有阅读错题发给AI，找到你的「专属盲区」。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r06">请分析我最近几次阅读理解的错题规律：
+
+【错题记录】（格式：题型 | 错选 | 正确 | 大概原因）
+1. [推断题] | 选C | 正确D | 感觉两个都说得通
+2. [主旨题] | 选A | 正确B | A在文中有提到
+3. [细节题] | 选B | 正确C | 定位到了但选错了
+…（列出所有错题）
+
+请完成：
+
+1. 错题分类统计
+各题型错误次数 + 错误率
+
+2. 主要问题诊断
+找出最核心的1-2个问题（不是题型，而是能力）
+如：「定位后判断同义替换能力弱」比「细节题错得多」更有用
+
+3. 错误选项分析
+我选的错误选项，有什么共同特征？
+（如：经常选「文中出现过相关词汇」的选项）
+
+4. 针对性训练计划
+基于诊断结果，给出2周提升计划（每天30分钟）
+具体到：第几天练什么，用什么方法<button class="copy-btn" onclick="cp('r06',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">批量分析</span><span class="tag">能力诊断</span><span class="tag">训练计划</span></div>
+  </div>
+</div>
+
+<div id="material" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">MATERIAL</div>
+    <div class="sec-title">AI生成练习材料</div>
+    <div class="sec-desc">按水平和话题定制阅读材料，配套出题和解析</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt R-07</span><span class="card-title">定制阅读练习（按年级和话题）</span></div>
+    <div class="card-desc">指定年级、话题、题型组合，AI生成完整的阅读理解练习。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r07">请为我生成一篇阅读理解练习：
+
+【参数】
+- 年级：[初二 / 初三 / 高一 / 高二 / 高考水平]
+- 话题：[科技 / 环境 / 文化 / 人物故事 / 社会热点]
+- 文章体裁：[记叙文 / 说明文 / 议论文]
+- 词数：[初中约200词 / 高中约300词]
+- 难词处理：遇到超纲词，在括号内给出中文释义
+
+【题目设置（5道）】
+- 细节理解题 × 2
+- 推断判断题 × 1
+- 词义猜测题 × 1
+- 主旨大意题 × 1
+
+【输出格式】
+Part 1：阅读文章（正文）
+---
+Part 2：题目（ABCD四选一）
+===
+Part 3：答案与解析（每道题：正确答案 + 定位原文 + 错误选项分析）
+
+请在文章难词上标注(*)，并在文章后列出带(*)的词的释义。<button class="copy-btn" onclick="cp('r07',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">完全定制</span><span class="tag">五题型组合</span><span class="tag">难词标注</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bc">Prompt R-08</span><span class="card-title">七选五/语法填空专项（高考新题型）</span></div>
+    <div class="card-desc">高考新增题型，考察段落逻辑和篇章结构，需要专项训练。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r08">请生成一套「七选五」阅读填空练习（高考题型）：
+
+【任务一：讲解七选五的解题逻辑】
+什么是七选五？考察什么能力？
+解题的4个关键线索：
+① 空格前后的逻辑关系词（however/therefore...）
+② 代词指代（it/they/this → 前文的什么？）
+③ 话题一致性（这段在讲什么？）
+④ 选项中的信息密度（答案选项通常有什么特征？）
+
+【任务二：生成一套练习题】
+主题：[填入话题，如：人工智能对教育的影响]
+格式：
+- 一篇300词文章，挖5个空
+- 7个选项（包含2个干扰项）
+- 文章和选项之间用---分隔
+
+【任务三：解析（等我回答后给出）】
+- 每空正确答案 + 判断依据（指出哪个线索）
+- 2个干扰项为什么错（非常重要）<button class="copy-btn" onclick="cp('r08',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">七选五</span><span class="tag">逻辑线索法</span><span class="tag">高考新题型</span></div>
+  </div>
+</div>
+
+<div id="vocab-in-context" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">VOCAB IN CONTEXT</div>
+    <div class="sec-title">语境猜词训练</div>
+    <div class="sec-desc">遇到生词不慌，用上下文线索推断词义——这是最实用的应试技能</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt R-09</span><span class="card-title">猜词4法讲解与练习</span></div>
+    <div class="card-desc">语境猜词有固定方法，掌握这4种方法，90%的词义猜测题都能搞定。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="r09">请系统讲解「通过语境猜测词义」的4种方法：
+
+【方法一：定义法】
+作者直接在文中解释了这个词——找到解释的信号词
+信号词有哪些？（is/means/refers to/is called...）
+例句：The pediatrician, a doctor who specializes in children's health, ...
+练习：出2道例题
+
+【方法二：对比法】
+生词和它的「反义词」或「对比词」同时出现
+信号词：but/however/unlike/on the contrary/while...
+例句练习：出2道
+
+【方法三：同义重复法】
+作者用不同方式说了同一个意思——另一个表达就是解释
+信号词：or/that is/in other words/namely/i.e....
+例句练习：出2道
+
+【方法四：语境推断法】
+没有明确信号词，靠整段话的意思来推断
+方法：先理解上下文的情境，再问「在这个情境中，这个词应该是正面/负面？具体/抽象？」
+例句练习：出2道
+
+【综合练习】
+给我8个含生词的句子/段落，让我用以上方法猜词义
+每题标明「应该用哪种方法」
+出完等我回答，再逐题给解析<button class="copy-btn" onclick="cp('r09',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">猜词4法</span><span class="tag">信号词归纳</span><span class="tag">综合练习</span></div>
+  </div>
+</div>
+
+</main>
+<footer>AI英语工具集 · 阅读模块 · Prompt R-01 至 R-09</footer>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:document.querySelector('.tab-bar').offsetTop-60,behavior:'smooth'});
+}
+function cp(id,btn){
+  const t=document.getElementById(id).innerText.replace(/复制|已复制/g,'').trim();
+  navigator.clipboard.writeText(t).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a)});
+  btn.textContent='已复制';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent='复制';btn.classList.remove('ok')},2000);
+}
+</script>
+</body>
+</html>

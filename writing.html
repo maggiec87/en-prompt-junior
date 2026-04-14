@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>写作提升 · AI英语工具集</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0e0f0e;--bg2:#141614;--bg3:#1a1c1a;
+  --surface:#202220;--surface2:#282a28;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e6e8e4;--text2:#9a9e98;--text3:#686b66;
+  --accent:#6fcf97;--accent2:rgba(111,207,151,0.13);
+  --teal:#56cfe1;--teal2:rgba(86,207,225,0.12);
+  --coral:#ff9f7f;--coral2:rgba(255,159,127,0.12);
+  --purple:#c8a8f4;--purple2:rgba(200,168,244,0.12);
+  --gold:#f0c060;--gold2:rgba(240,192,96,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+.suite-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.suite-logo{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;padding:14px 20px 14px 0;border-right:1px solid var(--border);white-space:nowrap;margin-right:16px}
+.suite-link{padding:14px 14px;font-size:12px;color:var(--text3);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-weight:500}
+.suite-link:hover{color:var(--text)}.suite-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+.hero{padding:56px 40px 48px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'WRITING';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:140px;font-weight:900;color:rgba(111,207,151,0.04);line-height:1;pointer-events:none;letter-spacing:-4px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--accent);margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.15;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:14px;color:var(--text2);max-width:500px}
+.hero-stats{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap}
+.hstat{border-left:2px solid var(--accent);padding-left:12px}
+.hstat-n{font-family:'DM Mono',monospace;font-size:24px;color:var(--accent)}
+.hstat-l{font-size:11px;color:var(--text3);margin-top:2px}
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 18px;font-size:13px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:'Noto Sans SC',sans-serif}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+main{max-width:860px;margin:0 auto;padding:40px 24px 80px}
+.panel{display:none}.panel.active{display:block}
+.sec-head{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--accent);margin-bottom:8px}
+.sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text2)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;white-space:nowrap}
+.bg{background:var(--accent2);color:var(--accent)}
+.bt{background:var(--teal2);color:var(--teal)}
+.bc{background:var(--coral2);color:var(--coral)}
+.bp{background:var(--purple2);color:var(--purple)}
+.bgo{background:var(--gold2);color:var(--gold)}
+.card-title{font-size:14px;font-weight:700;color:var(--text)}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.prompt-wrap{margin-top:14px;border-top:1px dashed var(--border);padding-top:14px}
+.prompt-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:8px}
+.prompt-box{background:#090a09;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;color:#c4c8c0;white-space:pre-wrap;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--border2);color:var(--text3);padding:4px 10px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--accent)}.copy-btn.ok{color:var(--accent);border-color:rgba(111,207,151,0.3)}
+.tip{background:var(--accent2);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--accent);margin-bottom:16px;line-height:1.6}
+.warn{background:var(--coral2);border-left:2px solid var(--coral);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--coral);margin-bottom:16px;line-height:1.6}
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:16px 0}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.score-dim{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);margin-bottom:4px}
+.score-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.score-desc{font-size:11px;color:var(--text3);line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--text3);background:var(--surface)}
+footer{text-align:center;padding:28px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);font-family:'DM Mono',monospace}
+@media(max-width:600px){.hero{padding:36px 20px 32px}.hero::before{font-size:80px}main{padding:28px 16px 60px}.suite-nav,.tab-bar{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<nav class="suite-nav">
+  <div class="suite-logo">AI英语工具集</div>
+  <a class="suite-link" href="grammar.html">语法</a>
+  <a class="suite-link active" href="writing.html">写作</a>
+  <a class="suite-link" href="listening.html">听力</a>
+  <a class="suite-link" href="reading.html">阅读</a>
+  <a class="suite-link" href="vocab.html">词汇</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">MODULE 02 · WRITING</div>
+  <h1>写作<span>提升</span><br>AI辅助工具</h1>
+  <p>AI批改 + 评分解析 + 范文对比，从初中应用文到高考大作文，覆盖全题型</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">10</div><div class="hstat-l">套 Prompt 模板</div></div>
+    <div class="hstat"><div class="hstat-n">5</div><div class="hstat-l">写作专项类型</div></div>
+    <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">评分维度</div></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview')">总览</button>
+  <button class="tab-btn" onclick="showTab('score')">评分标准</button>
+  <button class="tab-btn" onclick="showTab('revise')">AI批改润色</button>
+  <button class="tab-btn" onclick="showTab('types')">题型专项</button>
+  <button class="tab-btn" onclick="showTab('sentence')">句式升级</button>
+  <button class="tab-btn" onclick="showTab('practice')">限时练习</button>
+</div>
+
+<main>
+
+<div id="overview" class="panel active">
+  <div class="sec-head">
+    <div class="sec-tag">OVERVIEW</div>
+    <div class="sec-title">为什么作文分数上不去？</div>
+    <div class="sec-desc">背了模板，套了句型，还是拿不到高分的三个真实原因</div>
+  </div>
+  <div class="warn">最大的误区：以为「背范文 = 会写作」。实际上评卷老师最讨厌的就是千篇一律的模板作文——用词安全、句子平、没有亮点，只能在及格线徘徊。</div>
+  <div class="score-grid">
+    <div class="score-card">
+      <div class="score-dim">维度 01</div>
+      <div class="score-title">内容与任务完成</div>
+      <div class="score-desc">是否答题、要点是否覆盖、是否有效展开。这是最基础的得分</div>
+    </div>
+    <div class="score-card">
+      <div class="score-dim">维度 02</div>
+      <div class="score-title">语言准确性</div>
+      <div class="score-desc">语法错误、时态错误、单词拼写。错误越少，分越高</div>
+    </div>
+    <div class="score-card">
+      <div class="score-dim">维度 03</div>
+      <div class="score-title">词汇与句式丰富度</div>
+      <div class="score-desc">用词是否多样、句式是否有变化。这是拉分的关键</div>
+    </div>
+    <div class="score-card">
+      <div class="score-dim">维度 04</div>
+      <div class="score-title">逻辑与连贯性</div>
+      <div class="score-desc">段落是否清晰、过渡是否自然、论点是否有逻辑</div>
+    </div>
+  </div>
+  <div class="tip">AI批改的优势：它能同时从这4个维度评价你的作文，而且会针对你的具体问题给出修改建议——不是模板反馈，而是针对你这篇文章。</div>
+</div>
+
+<div id="score" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">SCORING</div>
+    <div class="sec-title">让AI按评分标准批改</div>
+    <div class="sec-desc">模拟真实考场评分，找出真正的失分点</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bg">Prompt W-01</span><span class="card-title">中考作文完整批改（按评分标准）</span></div>
+    <div class="card-desc">按中考四维评分标准打分，给出每个维度的具体扣分原因和改进建议。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w01">你是一位有10年批卷经验的中考英语阅卷老师。请按中考标准批改以下作文：
+
+【作文题目】：[粘贴题目要求]
+
+【学生作文】：
+[粘贴学生写的作文原文]
+
+请按以下维度逐项评分（总分15分）：
+
+【评分标准】
+① 内容与任务完成（5分）：要点是否覆盖，内容是否充实
+② 语言准确性（4分）：语法、时态、拼写错误数量和严重程度
+③ 词汇与句式（3分）：是否使用了多样化词汇和句型
+④ 逻辑与连贯（3分）：段落组织、过渡词使用、行文连贯性
+
+【输出格式】
+1. 逐维度打分（X/X分）并说明扣分原因
+2. 总分：X/15，对应等级（优/良/中/需加强）
+3. 找出文中所有语法和表达错误（不超过5个主要问题），逐一标注并改正
+4. 给出一个「升分版」改写——保留学生的核心内容，但把语言提升到8分段水平
+5. 一句话总结：这个学生最需要加强的是什么？<button class="copy-btn" onclick="cp('w01',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">中考标准</span><span class="tag">四维评分</span><span class="tag">升分版对比</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt W-02</span><span class="card-title">高考作文批改（应用文+读后续写）</span></div>
+    <div class="card-desc">高考两种写作题型各有评分侧重，针对性批改效果更准。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w02">请按高考评分标准批改以下英语作文：
+
+【题型】：[应用文 / 读后续写，二选一]
+【题目要求】：[粘贴完整题目]
+【学生作文】：[粘贴作文原文]
+
+【应用文评分重点（如适用）】
+- 格式是否规范（书信/通知/邮件格式）
+- 要点是否全部覆盖
+- 语言是否得体（正式/非正式语气）
+- 字数是否在要求范围内
+
+【读后续写评分重点（如适用）】
+- 情节是否与原文逻辑一致
+- 人物性格是否保持一致
+- 语言是否流畅自然
+- 是否有情感张力
+
+【输出要求】
+1. 分维度打分，说明每项扣分原因
+2. 指出3个「最影响得分」的问题
+3. 给出这3个问题的具体修改示例（不是整篇改，而是针对问题段落）
+4. 告诉我：如果是高考，这篇作文大概能得多少分？（满分25分/15分）<button class="copy-btn" onclick="cp('w02',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">高考标准</span><span class="tag">应用文</span><span class="tag">读后续写</span></div>
+  </div>
+</div>
+
+<div id="revise" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">REVISE</div>
+    <div class="sec-title">AI批改与润色</div>
+    <div class="sec-desc">保留学生自己的表达，在此基础上提升而不是整篇替换</div>
+  </div>
+  <div class="tip">好的AI批改是「外科手术」，不是「推倒重建」。目标是让学生的作文提升一个档次，而不是变成AI写的文章。</div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bc">Prompt W-03</span><span class="card-title">逐句润色（保留原意，提升表达）</span></div>
+    <div class="card-desc">针对作文中表达平淡的部分，AI给出升级版，学生对比学习。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w03">请帮我润色以下英语作文段落，要求：
+
+【原文段落】：
+[粘贴需要润色的段落]
+
+【润色规则】
+1. 保留原文的核心意思和结构
+2. 提升以下方面（按优先级）：
+   - 替换「过于简单」的词汇（如：very good → impressive, outstanding）
+   - 将短句合并为复合句或复杂句
+   - 加入恰当的过渡词和连接词
+   - 修正语法错误
+
+3. 不要改变作者的观点和论证逻辑
+
+【输出格式】
+原句 → 润色版（每句对应，方便对比）
+最后：总结做了哪些改动，为什么这样改更好（这部分最重要，要让学生真正学到）<button class="copy-btn" onclick="cp('w03',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">逐句对比</span><span class="tag">保留原意</span><span class="tag">学改并重</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bg">Prompt W-04</span><span class="card-title">开头结尾专项升级</span></div>
+    <div class="card-desc">开头和结尾是评卷老师最先看到的地方，也是最容易套模板的地方。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w04">我的作文开头/结尾太平淡，请帮我升级：
+
+【作文题目】：[填入题目]
+【当前开头】：[粘贴当前开头段落]
+【当前结尾】：[粘贴当前结尾段落]
+
+请分别给出3个版本的开头和结尾：
+
+开头版本A：引用名言/数据引入（吸引眼球）
+开头版本B：设问开头（引发思考）
+开头版本C：场景描写开头（代入感强）
+
+结尾版本A：总结升华型（点题，呼应开头）
+结尾版本B：展望未来型（给出行动建议）
+结尾版本C：情感共鸣型（留下印象）
+
+每个版本后注明：
+- 适合哪类题目
+- 这种开头/结尾方式的评分优势
+- 注意事项（避免什么错误）<button class="copy-btn" onclick="cp('w04',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">开头结尾</span><span class="tag">三种风格</span><span class="tag">选择最适合的</span></div>
+  </div>
+</div>
+
+<div id="types" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">TYPES</div>
+    <div class="sec-title">题型专项写法</div>
+    <div class="sec-desc">通知/邮件/说明文/议论文，每种题型有不同的写法套路</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bp">Prompt W-05</span><span class="card-title">书信/邮件写作（初高中应用文）</span></div>
+    <div class="card-desc">格式规范 + 表达地道，邮件类写作最容易在格式上丢分。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w05">请教我写一封[类型：感谢信/邀请信/建议信/投诉信/申请信]：
+
+【具体题目】：[粘贴完整题目要求]
+
+请按以下步骤输出：
+
+第一步：格式框架
+列出这类信件的标准格式（称呼/开头/正文结构/结尾/落款）
+说明：哪些格式错误最容易扣分？
+
+第二步：关键句型
+给出10个该类型信件的「万能句型模板」
+注意：要有高低档次的区分（基础款 vs 高分款）
+
+第三步：范文（150词左右）
+根据我的题目写一篇范文
+在范文中标注「亮点句」（用★标记）并说明为什么是亮点
+
+第四步：让我练习
+给我一个新的相同类型题目，让我写
+写完后你来批改，重点看格式和表达<button class="copy-btn" onclick="cp('w05',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">应用文全类型</span><span class="tag">格式规范</span><span class="tag">范文+练习</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt W-06</span><span class="card-title">议论文写作（观点论证）</span></div>
+    <div class="card-desc">高考议论文最怕「有观点没论证」，AI帮你建立论证框架。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w06">请教我写一篇英语议论文：
+
+【题目】：[填入议论文题目，如：Should students use mobile phones in school?]
+
+第一步：审题 + 立场
+分析这道题可以持哪些立场
+推荐一个「最好写、最好论证」的立场，说明原因
+
+第二步：论点框架（三段式）
+段落一：引入 + 观点（2-3句）
+段落二：论点1 + 论据 + 例子（逻辑层次）
+段落三：论点2 + 论据 + 例子
+段落四：结尾升华（1-2句）
+
+第三步：论证升级技巧
+如何让论证更有说服力：
+- 数据引用（虽然是写作，但虚构合理数据可以提分）
+- 让步+反驳结构（诚然...然而...）
+- 举例的层次感（个人例子→社会例子→国家/国际例子）
+
+第四步：给我写一篇完整范文（180词）
+在范文中标注：论证结构（用[论点][论据][例子]标记）
+
+第五步：给我出一道练习题，让我写，你来批改<button class="copy-btn" onclick="cp('w06',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">议论文</span><span class="tag">论证框架</span><span class="tag">让步反驳结构</span></div>
+  </div>
+</div>
+
+<div id="sentence" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">SENTENCE</div>
+    <div class="sec-title">句式升级训练</div>
+    <div class="sec-desc">告别简单句堆砌，用高分句式让作文立刻出彩</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bgo">Prompt W-07</span><span class="card-title">简单句 → 高分句升级练习</span></div>
+    <div class="card-desc">拿出自己作文中的普通句子，AI帮你改成多种高分版本，学完即用。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w07">请帮我把以下简单句升级为高分句式：
+
+【我的简单句】：
+1. I like reading books.
+2. The environment is important.
+3. We should protect animals.
+（替换为你自己作文中的句子）
+
+每个句子请给出4种升级方式：
+
+版本A：加入从句（定语从句或状语从句）
+版本B：使用非谓语动词简化结构
+版本C：倒装句或强调句（适合结尾段）
+版本D：加入高级词汇替换普通词
+
+每个版本：
+- 给出升级后的句子
+- 标注用了什么句式/词汇技巧
+- 评分档次：基础/中等/高分（★★★）
+
+最后给出：这4种升级方式的「使用时机」——什么时候用哪种最合适？<button class="copy-btn" onclick="cp('w07',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">句式升级</span><span class="tag">四种版本</span><span class="tag">评星标注</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bg">Prompt W-08</span><span class="card-title">过渡词&连接词升级</span></div>
+    <div class="card-desc">中国学生最常写「First...Second...Finally」，AI帮你换成更自然的表达。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w08">请给我一份完整的英语写作过渡词升级指南：
+
+【我目前常用的过渡词】：First, Second, Finally, Because, But, Also, So
+
+请为每个常见过渡词给出5个「更高级」的替换选项：
+
+格式：
+[原词] → [高级替换1 / 替换2 / 替换3 / 替换4 / 替换5]
+使用场景说明（哪些替换更正式？哪些更口语化？）
+
+额外整理：
+- 「表示让步/转折」的高级过渡词（5个）
+- 「表示因果」的高级过渡词（5个）
+- 「表示举例」的高级过渡词（5个）
+- 「用于结尾段」的高级过渡词（5个）
+
+最后：给我一段「全用基础过渡词」的段落
+让我用高级过渡词改写，改完你来评分<button class="copy-btn" onclick="cp('w08',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">过渡词升级</span><span class="tag">替换对照表</span><span class="tag">改写练习</span></div>
+  </div>
+</div>
+
+<div id="practice" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">PRACTICE</div>
+    <div class="sec-title">限时练习 + 反馈</div>
+    <div class="sec-desc">模拟考场环境，写完即批改，建立写作手感</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bc">Prompt W-09</span><span class="card-title">模拟考场限时写作</span></div>
+    <div class="card-desc">AI出题 → 学生限时写 → AI批改，全流程模拟真实考场。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w09">请给我出一道英语写作练习题，我要进行限时写作训练：
+
+【我的年级】：[初二 / 初三 / 高一 / 高二 / 高三]
+【练习类型】：[应用文 / 说明文 / 议论文]
+【限时】：25分钟（中考标准）/ 35分钟（高考标准）
+
+【出题要求】
+- 难度与近年真题相当
+- 有明确的写作要点（bullet points）
+- 有字数要求
+- 题目贴近学生实际生活（不要太偏僻的话题）
+
+【流程】
+第一步：你出题，然后等我写（我会在下一条消息发给你）
+第二步：我发作文后，你按真实考场标准批改：
+  - 逐维度打分
+  - 找出主要问题（不超过5个）
+  - 给出一个「参考范文」（展示满分是什么水平）
+  - 总结：这次练习我最大的进步空间在哪里？
+
+现在请出题：<button class="copy-btn" onclick="cp('w09',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">模拟考场</span><span class="tag">限时写作</span><span class="tag">含范文对比</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bp">Prompt W-10</span><span class="card-title">30天写作进步追踪</span></div>
+    <div class="card-desc">每周做一次写作练习，让AI对比上周作文，量化进步。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="w10">请帮我对比分析两篇作文的进步情况：
+
+【第一篇（上周/上次）】：
+[粘贴之前的作文]
+
+【第二篇（本次）】：
+[粘贴这次的作文]
+
+请完成：
+
+1. 进步点分析（重点！）
+找出这次作文比上次有明显进步的地方（至少3点）
+具体说明：哪里进步了？进步幅度大吗？
+
+2. 还需努力的点
+找出本次仍然存在的2-3个问题
+这些问题是上次就有的吗？还是新出现的？
+
+3. 量化评分对比
+上次：X/15分；本次：X/15分；进步：+X分
+每个维度的分数变化
+
+4. 下次练习重点建议
+根据当前进步曲线，下次应该重点练什么？
+给出具体的练习方向（不是泛泛的建议）<button class="copy-btn" onclick="cp('w10',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">进步追踪</span><span class="tag">前后对比</span><span class="tag">量化分析</span></div>
+  </div>
+</div>
+
+</main>
+<footer>AI英语工具集 · 写作模块 · Prompt W-01 至 W-10</footer>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:document.querySelector('.tab-bar').offsetTop-60,behavior:'smooth'});
+}
+function cp(id,btn){
+  const t=document.getElementById(id).innerText.replace(/复制|已复制/g,'').trim();
+  navigator.clipboard.writeText(t).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a)});
+  btn.textContent='已复制';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent='复制';btn.classList.remove('ok')},2000);
+}
+</script>
+</body>
+</html>

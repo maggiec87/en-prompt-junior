@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI英语工具集 · 初中高中全专项</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0c;
+  --bg2:#111114;
+  --surface:#18181e;
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.16);
+  --text:#e8e6e0;
+  --text2:#8e8c86;
+  --text3:#545250;
+}
+
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* GRID NOISE TEXTURE */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,0.015) 1px,transparent 1px);
+  background-size:24px 24px;pointer-events:none;z-index:0
+}
+
+/* HEADER */
+header{
+  position:relative;z-index:1;
+  padding:80px 40px 72px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.top-tag{
+  font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:.2em;
+  color:var(--text3);margin-bottom:24px;
+  animation: fadein .8s ease both;
+}
+header h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,7vw,80px);
+  font-weight:900;line-height:1.05;
+  letter-spacing:-2px;
+  margin-bottom:20px;
+  animation: fadein .8s .1s ease both;
+}
+.title-line{display:block}
+.title-accent{
+  background:linear-gradient(135deg,#e8c547 0%,#ff9f7f 40%,#c084fc 80%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
+}
+header p{
+  font-size:16px;color:var(--text2);max-width:480px;
+  margin:0 auto 40px;line-height:1.7;
+  animation: fadein .8s .2s ease both;
+}
+.header-meta{
+  display:flex;justify-content:center;gap:32px;flex-wrap:wrap;
+  animation: fadein .8s .3s ease both;
+}
+.meta-item{
+  font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);
+  display:flex;align-items:center;gap:8px
+}
+.meta-dot{width:6px;height:6px;border-radius:50%;background:var(--text3)}
+
+/* MODULE GRID */
+.modules{
+  position:relative;z-index:1;
+  max-width:1000px;margin:0 auto;
+  padding:60px 32px 80px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+}
+
+/* MODULE CARD */
+.mod{
+  border-radius:16px;
+  border:1px solid var(--border);
+  padding:32px 28px;
+  text-decoration:none;
+  color:var(--text);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  transition:border-color .25s, transform .2s;
+  animation: fadein .6s ease both;
+  background:var(--surface);
+}
+.mod:hover{border-color:var(--border2);transform:translateY(-3px)}
+.mod::after{
+  content:'';position:absolute;inset:0;
+  opacity:0;transition:opacity .3s;
+  pointer-events:none
+}
+.mod:hover::after{opacity:1}
+
+/* Per-module accent colors */
+.mod-grammar{--c:#e8c547;--cg:rgba(232,197,71,0.06)}
+.mod-writing{--c:#6fcf97;--cg:rgba(111,207,151,0.06)}
+.mod-listening{--c:#7b9ef8;--cg:rgba(123,158,248,0.06)}
+.mod-reading{--c:#c084fc;--cg:rgba(192,132,252,0.06)}
+.mod-vocab{--c:#fb923c;--cg:rgba(251,146,60,0.06)}
+
+.mod::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--c);opacity:.6;transition:opacity .25s
+}
+.mod:hover::before{opacity:1}
+.mod::after{background:var(--cg)}
+
+.mod-num{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--c);letter-spacing:.1em;margin-bottom:20px;opacity:.8
+}
+.mod-icon{
+  font-family:'Playfair Display',serif;
+  font-size:44px;font-weight:900;
+  color:var(--c);line-height:1;margin-bottom:16px;
+  opacity:.18;
+  position:absolute;top:24px;right:24px;
+  transition:opacity .25s
+}
+.mod:hover .mod-icon{opacity:.28}
+
+.mod-title{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:700;
+  margin-bottom:10px;line-height:1.2
+}
+.mod-desc{font-size:13px;color:var(--text2);line-height:1.7;flex:1}
+.mod-footer{
+  margin-top:24px;padding-top:16px;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center
+}
+.mod-stats{display:flex;gap:14px}
+.mod-stat{
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)
+}
+.mod-stat span{color:var(--c);font-weight:500}
+.mod-arrow{
+  font-size:18px;color:var(--c);opacity:.5;
+  transition:opacity .2s, transform .2s
+}
+.mod:hover .mod-arrow{opacity:1;transform:translateX(4px)}
+
+/* FEATURE LIST */
+.mod-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.mod-feature{
+  font-size:10px;padding:2px 8px;border-radius:20px;
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--text3);
+  font-family:'DM Mono',monospace
+}
+
+/* BOTTOM SECTION */
+.bottom{
+  position:relative;z-index:1;
+  max-width:700px;margin:0 auto;
+  padding:0 32px 80px;
+  text-align:center
+}
+.bottom h2{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:700;margin-bottom:12px
+}
+.bottom p{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:28px}
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;text-align:left}
+.how-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+.how-step{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:6px;letter-spacing:.08em}
+.how-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.how-desc{font-size:11px;color:var(--text3);line-height:1.5}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:1;
+  text-align:center;padding:28px 32px;
+  border-top:1px solid var(--border);
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)
+}
+footer a{color:var(--text3);text-decoration:none}
+
+@keyframes fadein{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.mod:nth-child(1){animation-delay:.05s}
+.mod:nth-child(2){animation-delay:.1s}
+.mod:nth-child(3){animation-delay:.15s}
+.mod:nth-child(4){animation-delay:.2s}
+.mod:nth-child(5){animation-delay:.25s}
+
+@media(max-width:640px){
+  header{padding:56px 20px 48px}
+  .modules{padding:40px 16px 60px;grid-template-columns:1fr}
+  .bottom{padding:0 16px 60px}
+  .header-meta{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top-tag">AI × 英语教育 · 初中高中全专项工具集</div>
+  <h1>
+    <span class="title-line">五大专项</span>
+    <span class="title-line title-accent">全套AI工具</span>
+  </h1>
+  <p>语法 · 写作 · 听力 · 阅读 · 词汇，每个专项配套完整 Prompt 模板，直接复制使用</p>
+  <div class="header-meta">
+    <div class="meta-item"><div class="meta-dot"></div>共 50+ 个 Prompt</div>
+    <div class="meta-item"><div class="meta-dot"></div>覆盖初中全阶段</div>
+    <div class="meta-item"><div class="meta-dot"></div>Claude / ChatGPT 通用</div>
+    <div class="meta-item"><div class="meta-dot"></div>一键复制即用</div>
+  </div>
+</header>
+
+<div class="modules">
+
+  <a class="mod mod-grammar" href="grammar.html">
+    <div class="mod-num">MODULE 01</div>
+    <div class="mod-icon">G</div>
+    <div class="mod-title">语法精讲</div>
+    <div class="mod-desc">时态体系 · 三大从句 · 非谓语动词 · 虚拟语气，从「背规则」到「理解逻辑」，错题深度诊断</div>
+    <div class="mod-features">
+      <span class="mod-feature">时态对比</span>
+      <span class="mod-feature">从句框架</span>
+      <span class="mod-feature">错题分析</span>
+      <span class="mod-feature">专项出题</span>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-stats">
+        <div class="mod-stat"><span>8</span> 个Prompt</div>
+        <div class="mod-stat"><span>6</span> 个专项</div>
+      </div>
+      <div class="mod-arrow">→</div>
+    </div>
+  </a>
+
+  <a class="mod mod-writing" href="writing.html">
+    <div class="mod-num">MODULE 02</div>
+    <div class="mod-icon">W</div>
+    <div class="mod-title">写作提升</div>
+    <div class="mod-desc">AI批改评分 · 句式升级 · 开头结尾 · 应用文议论文全题型，保留原意的精准润色方法</div>
+    <div class="mod-features">
+      <span class="mod-feature">四维评分</span>
+      <span class="mod-feature">逐句润色</span>
+      <span class="mod-feature">题型写法</span>
+      <span class="mod-feature">进步追踪</span>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-stats">
+        <div class="mod-stat"><span>10</span> 个Prompt</div>
+        <div class="mod-stat"><span>5</span> 个题型</div>
+      </div>
+      <div class="mod-arrow">→</div>
+    </div>
+  </a>
+
+  <a class="mod mod-listening" href="listening.html">
+    <div class="mod-num">MODULE 03</div>
+    <div class="mod-icon">L</div>
+    <div class="mod-title">听力突破</div>
+    <div class="mod-desc">精听训练法 · AI材料生成 · 音标辨音 · 考场策略，从「靠感觉」到「有方法」</div>
+    <div class="mod-features">
+      <span class="mod-feature">精听流程</span>
+      <span class="mod-feature">材料生成</span>
+      <span class="mod-feature">音标训练</span>
+      <span class="mod-feature">套题模拟</span>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-stats">
+        <div class="mod-stat"><span>8</span> 个Prompt</div>
+        <div class="mod-stat"><span>3</span> 个阶段</div>
+      </div>
+      <div class="mod-arrow">→</div>
+    </div>
+  </a>
+
+  <a class="mod mod-reading" href="reading.html">
+    <div class="mod-num">MODULE 04</div>
+    <div class="mod-icon">R</div>
+    <div class="mod-title">阅读理解</div>
+    <div class="mod-desc">五大题型拆解 · 同义替换训练 · 语境猜词 · 七选五专项，读懂了还是做错？找真正原因</div>
+    <div class="mod-features">
+      <span class="mod-feature">推断题专攻</span>
+      <span class="mod-feature">同义替换</span>
+      <span class="mod-feature">猜词4法</span>
+      <span class="mod-feature">七选五</span>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-stats">
+        <div class="mod-stat"><span>9</span> 个Prompt</div>
+        <div class="mod-stat"><span>5</span> 个题型</div>
+      </div>
+      <div class="mod-arrow">→</div>
+    </div>
+  </a>
+
+  <a class="mod mod-vocab" href="vocab.html">
+    <div class="mod-num">MODULE 05</div>
+    <div class="mod-icon">V</div>
+    <div class="mod-title">词汇衔接</div>
+    <div class="mod-desc">小升初词汇断层攻克 · 语境记忆法 · 构词规律 · 6周暑假补词计划，含全套Prompt A-N</div>
+    <div class="mod-features">
+      <span class="mod-feature">个性化词单</span>
+      <span class="mod-feature">语境记忆</span>
+      <span class="mod-feature">构词规律</span>
+      <span class="mod-feature">6周计划</span>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-stats">
+        <div class="mod-stat"><span>14</span> 个Prompt</div>
+        <div class="mod-stat"><span>4</span> 个方法</div>
+      </div>
+      <div class="mod-arrow">→</div>
+    </div>
+  </a>
+
+</div>
+
+<div class="bottom">
+  <h2>怎么使用这套工具？</h2>
+  <p>每个模块内，找到你需要的 Prompt，点击右上角「复制」，粘贴到 Claude 或 ChatGPT，按提示填入孩子的具体情况，即可开始使用。</p>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-step">STEP 01</div>
+      <div class="how-title">选模块</div>
+      <div class="how-desc">根据当前最需要提升的专项，选择对应模块</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step">STEP 02</div>
+      <div class="how-title">找Prompt</div>
+      <div class="how-desc">在模块内选最符合需求的Prompt模板</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step">STEP 03</div>
+      <div class="how-title">填信息</div>
+      <div class="how-desc">替换[方括号]内容为孩子的实际情况</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step">STEP 04</div>
+      <div class="how-title">开始学习</div>
+      <div class="how-desc">粘贴到AI工具，按AI的提示完成互动学习</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  AI英语工具集 · 五大专项 · 共 50+ 个 Prompt · Claude / ChatGPT 通用
+</footer>
+
+</body>
+</html>

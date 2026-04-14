@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>词汇衔接 · AI英语工具集</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0e0c08;--bg2:#141208;--bg3:#1a1810;
+  --surface:#201e14;--surface2:#282618;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#ece8dc;--text2:#9e9a8e;--text3:#6a6656;
+  --accent:#fb923c;--accent2:rgba(251,146,60,0.14);
+  --teal:#34d399;--teal2:rgba(52,211,153,0.12);
+  --purple:#c084fc;--purple2:rgba(192,132,252,0.12);
+  --blue:#60a5fa;--blue2:rgba(96,165,250,0.12);
+}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+.suite-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.suite-logo{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;padding:14px 20px 14px 0;border-right:1px solid var(--border);white-space:nowrap;margin-right:16px;text-decoration:none}
+.suite-link{padding:14px 14px;font-size:12px;color:var(--text3);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-weight:500}
+.suite-link:hover{color:var(--text)}
+.suite-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+.hero{padding:56px 40px 48px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'VOCAB';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:140px;font-weight:900;color:rgba(251,146,60,0.04);line-height:1;pointer-events:none;letter-spacing:-4px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--accent);margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.15;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:14px;color:var(--text2);max-width:500px}
+.hero-stats{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap}
+.hstat{border-left:2px solid var(--accent);padding-left:12px}
+.hstat-n{font-family:'DM Mono',monospace;font-size:24px;color:var(--accent)}
+.hstat-l{font-size:11px;color:var(--text3);margin-top:2px}
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 18px;font-size:13px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:'Noto Sans SC',sans-serif}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+main{max-width:860px;margin:0 auto;padding:40px 24px 80px}
+.panel{display:none}.panel.active{display:block}
+.sec-head{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--accent);margin-bottom:8px}
+.sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text2)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;white-space:nowrap}
+.ba{background:var(--accent2);color:var(--accent)}
+.bt{background:var(--teal2);color:var(--teal)}
+.bp{background:var(--purple2);color:var(--purple)}
+.bb{background:var(--blue2);color:var(--blue)}
+.card-title{font-size:14px;font-weight:700;color:var(--text)}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.prompt-wrap{margin-top:14px;border-top:1px dashed var(--border);padding-top:14px}
+.prompt-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:8px}
+.prompt-box{background:#090806;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;color:#c8c0a8;white-space:pre-wrap;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--border2);color:var(--text3);padding:4px 10px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--accent)}
+.copy-btn.ok{color:var(--teal);border-color:rgba(52,211,153,0.3)}
+.tip{background:var(--teal2);border-left:2px solid var(--teal);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--teal);margin-bottom:16px;line-height:1.6}
+.warn{background:var(--accent2);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--accent);margin-bottom:16px;line-height:1.6}
+.mini-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:24px}
+.mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.mini-stat-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:4px}
+.mini-stat-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent)}
+.mini-stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.gap-row{display:flex;align-items:flex-end;gap:12px;margin:24px 0 8px;flex-wrap:wrap}
+.gap-col{text-align:center;flex:1;min-width:60px}
+.gap-col-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px}
+.gap-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);margin-top:6px}
+.gap-arrow{font-size:18px;color:var(--accent);padding-bottom:20px;align-self:flex-end}
+.gap-legend{display:flex;gap:16px;font-size:11px;color:var(--text3);margin-bottom:20px;font-family:'DM Mono',monospace}
+.gap-legend span{display:flex;align-items:center;gap:6px}
+.gap-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:16px 0}
+.ov-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s}
+.ov-card:hover{border-color:var(--accent)}
+.ov-num{font-family:'DM Mono',monospace;font-size:26px;color:var(--accent);line-height:1;margin-bottom:6px}
+.ov-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.ov-desc{font-size:12px;color:var(--text3);line-height:1.5}
+.step-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.step-dot{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#000;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-text{font-size:13px;color:var(--text2);line-height:1.6;padding-top:3px}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:16px}
+.plan-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.plan-week{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:6px;letter-spacing:.06em}
+.plan-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.plan-desc{font-size:11px;color:var(--text3);line-height:1.6}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--text3);background:var(--surface)}
+footer{text-align:center;padding:28px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);font-family:'DM Mono',monospace}
+@media(max-width:600px){.hero{padding:36px 20px 32px}.hero::before{font-size:80px}main{padding:28px 16px 60px}.suite-nav,.tab-bar{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<nav class="suite-nav">
+  <a class="suite-logo" href="index.html">AI英语工具集</a>
+  <a class="suite-link" href="grammar.html">语法</a>
+  <a class="suite-link" href="writing.html">写作</a>
+  <a class="suite-link" href="listening.html">听力</a>
+  <a class="suite-link" href="reading.html">阅读</a>
+  <a class="suite-link active" href="vocab.html">词汇</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">MODULE 05 · VOCABULARY</div>
+  <h1>词汇<span>衔接</span><br>AI辅助工具</h1>
+  <p>小升初词汇断层攻克，从诊断缺口到语境记忆到构词规律，6周暑假补词全套方案</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">14</div><div class="hstat-l">套 Prompt 模板</div></div>
+    <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">核心学习方法</div></div>
+    <div class="hstat"><div class="hstat-n">6</div><div class="hstat-l">周暑假计划</div></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview',0)">总览</button>
+  <button class="tab-btn" onclick="showTab('gap',1)">断层分析</button>
+  <button class="tab-btn" onclick="showTab('step1',2)">Step 1 · 诊断词单</button>
+  <button class="tab-btn" onclick="showTab('step2',3)">Step 2 · 语境记忆</button>
+  <button class="tab-btn" onclick="showTab('step3',4)">Step 3 · AI出题</button>
+  <button class="tab-btn" onclick="showTab('step4',5)">Step 4 · 构词规律</button>
+  <button class="tab-btn" onclick="showTab('plan',6)">6周计划</button>
+</div>
+
+<main>
+
+<div id="overview" class="panel active">
+  <div class="sec-head">
+    <div class="sec-tag">OVERVIEW</div>
+    <div class="sec-title">全套方法总览</div>
+    <div class="sec-desc">点击任意模块快速跳转，每个步骤附可直接复制的 Prompt</div>
+  </div>
+  <div class="warn">核心认知：传统「背单词表」效率极低，因为脱离语境。AI 的价值在于——让每个词在真实使用场景中被反复遇见，并做到即时纠错。</div>
+  <div class="ov-grid">
+    <div class="ov-card" onclick="showTab('gap',1)"><div class="ov-num">01</div><div class="ov-title">断层有多大？</div><div class="ov-desc">数据说话：小学600词 → 初一要求1600词，一个暑假要补1000词</div></div>
+    <div class="ov-card" onclick="showTab('step1',2)"><div class="ov-num">02</div><div class="ov-title">诊断 + 生成词单</div><div class="ov-desc">按教材版本让 AI 生成个性化词单，而非通用词书</div></div>
+    <div class="ov-card" onclick="showTab('step2',3)"><div class="ov-num">03</div><div class="ov-title">语境记忆法</div><div class="ov-desc">每词3个生活场景句，背用法不背释义，留存率提升3倍</div></div>
+    <div class="ov-card" onclick="showTab('step3',4)"><div class="ov-num">04</div><div class="ov-title">AI 出题 + 即时纠错</div><div class="ov-desc">AI 针对弱点无限出新题，做完即反馈，比对答案快10倍</div></div>
+    <div class="ov-card" onclick="showTab('step4',5)"><div class="ov-num">05</div><div class="ov-title">构词规律</div><div class="ov-desc">学会一个前缀，推断数十个新词——真正的提速方法</div></div>
+    <div class="ov-card" onclick="showTab('plan',6)"><div class="ov-num">06</div><div class="ov-title">6周暑假计划</div><div class="ov-desc">按节奏拆解，家长陪学路线图，每天15-20分钟</div></div>
+  </div>
+  <div class="tip">适用对象：小学五六年级、即将升初中的学生家长。全套 Prompt A–N 共14个，Claude / ChatGPT 均可使用。</div>
+</div>
+
+<div id="gap" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">DATA</div>
+    <div class="sec-title">词汇断层有多大？</div>
+    <div class="sec-desc">用数据说清楚这个坎，是家长愿意行动的前提</div>
+  </div>
+  <div class="mini-stats">
+    <div class="mini-stat"><div class="mini-stat-label">小学毕业</div><div class="mini-stat-val">600</div><div class="mini-stat-sub">核心词汇量</div></div>
+    <div class="mini-stat"><div class="mini-stat-label">初一要求</div><div class="mini-stat-val">1600</div><div class="mini-stat-sub">课标词汇量</div></div>
+    <div class="mini-stat"><div class="mini-stat-label">暑假缺口</div><div class="mini-stat-val">~1000</div><div class="mini-stat-sub">需新增的词</div></div>
+    <div class="mini-stat"><div class="mini-stat-label">高考目标</div><div class="mini-stat-val">3500+</div><div class="mini-stat-sub">高考词汇要求</div></div>
+  </div>
+  <div class="gap-row">
+    <div class="gap-col">
+      <div class="gap-col-label">小学毕业</div>
+      <div style="height:48px;background:rgba(52,211,153,0.2);border:1px solid rgba(52,211,153,0.35);border-radius:6px 6px 0 0;max-width:64px;margin:0 auto"></div>
+      <div class="gap-num">600词</div>
+    </div>
+    <div class="gap-arrow">→</div>
+    <div class="gap-col">
+      <div class="gap-col-label">初一要求</div>
+      <div style="max-width:64px;margin:0 auto">
+        <div style="height:80px;background:rgba(251,146,60,0.2);border:1px solid rgba(251,146,60,0.35);border-radius:6px 6px 0 0;border-bottom:none"></div>
+        <div style="height:48px;background:rgba(52,211,153,0.2);border:1px solid rgba(52,211,153,0.35);border-radius:0 0 6px 6px;border-top:none"></div>
+      </div>
+      <div class="gap-num">1600词</div>
+    </div>
+    <div class="gap-arrow">→</div>
+    <div class="gap-col">
+      <div class="gap-col-label">初中毕业</div>
+      <div style="max-width:64px;margin:0 auto">
+        <div style="height:152px;background:rgba(251,146,60,0.2);border:1px solid rgba(251,146,60,0.35);border-radius:6px 6px 0 0;border-bottom:none"></div>
+        <div style="height:48px;background:rgba(52,211,153,0.2);border:1px solid rgba(52,211,153,0.35);border-radius:0 0 6px 6px;border-top:none"></div>
+      </div>
+      <div class="gap-num">2500词</div>
+    </div>
+    <div class="gap-arrow">→</div>
+    <div class="gap-col">
+      <div class="gap-col-label">高考目标</div>
+      <div style="max-width:64px;margin:0 auto">
+        <div style="height:232px;background:rgba(251,146,60,0.2);border:1px solid rgba(251,146,60,0.35);border-radius:6px 6px 0 0;border-bottom:none"></div>
+        <div style="height:48px;background:rgba(52,211,153,0.2);border:1px solid rgba(52,211,153,0.35);border-radius:0 0 6px 6px;border-top:none"></div>
+      </div>
+      <div class="gap-num">3500词</div>
+    </div>
+  </div>
+  <div class="gap-legend">
+    <span><i style="background:rgba(52,211,153,0.3);border:1px solid rgba(52,211,153,0.4)"></i>已有基础词汇</span>
+    <span><i style="background:rgba(251,146,60,0.3);border:1px solid rgba(251,146,60,0.4)"></i>需新增（断层区）</span>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge ba">最痛断层</span><span class="card-title">1个暑假补1000词，方法比努力更重要</span></div>
+    <div class="card-desc">小学阶段学的多是具体名词和基础动词；初中骤然要求掌握抽象词、多义词、构词复杂词。孩子用原来「反复抄写、死记释义」的方法效率极低——研究表明，单词在不同语境中出现 6-7 次才能真正记住。</div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge bt">根本原因</span><span class="card-title">方法没升级，不是孩子不努力</span></div>
+    <div class="card-desc">
+      <div class="step-row"><div class="step-dot">1</div><div class="step-text">脱离语境死记释义 → 记住了，但不会用，考试做阅读照样错</div></div>
+      <div class="step-row"><div class="step-dot">2</div><div class="step-text">练习没有即时反馈 → 错了不知道为什么，下次继续错</div></div>
+      <div class="step-row"><div class="step-dot">3</div><div class="step-text">没有构词意识 → 遇到新词完全懵，无法推断</div></div>
+    </div>
+  </div>
+  <div class="tip">AI 工具恰好解决这三个问题：无限生成语境句 + 即时纠错 + 系统整理构词规律。点击上方标签页逐步学习。</div>
+</div>
+
+<div id="step1" class="panel">
+  <div class="sec-head"><div class="sec-tag">STEP 01</div><div class="sec-title">诊断缺口，生成专属词单</div><div class="sec-desc">不要用通用词书，按教材版本让 AI 定制词单</div></div>
+  <div class="tip">核心逻辑：每个孩子的缺口不一样，教材版本不同词序也不同。让 AI 直接生成定制词单，比买一本词书高效得多。</div>
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt A</span><span class="card-title">生成初一高频词单（按教材版本）</span></div>
+    <div class="card-desc">适用场景：开学前一个月，快速锁定需要补的词。Claude / ChatGPT 均可使用。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pA">你是初中英语教学专家。请完成以下任务：
+
+【任务】列出【人教版】初一上册中，小学毕业生最容易陌生的50个核心词。
+
+【输出格式】请按以下格式输出每个词：
+单词 | 词性 | 中文释义 | 一个生活场景例句（不超过15词）| 1个同根词
+
+【额外要求】
+- 优先选择：多义词、抽象词、易混淆词
+- 例句场景请贴近初中生日常生活
+- 最后单独列出3个「最容易考的」词并注明原因
+
+开始输出：<button class="copy-btn" onclick="cp('pA',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">替换「人教版」为实际版本</span><span class="tag">外研社 / 译林 / 北师大均可</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt B</span><span class="card-title">诊断孩子的具体弱点词</span></div>
+    <div class="card-desc">让孩子做词汇自测后，把错词发给 AI 分析，找到真正的薄弱环节。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pB">以下是一个即将升入初一的学生，在词汇自测中答错的单词列表：
+
+【错词列表】：[在此粘贴孩子的错词，用逗号隔开]
+
+请帮我：
+1. 分析这些错词的共同规律（是某类词性？某个话题？还是某种构词形式？）
+2. 找出最需要优先补的10个词，并说明原因
+3. 基于这些错词，推断出孩子还可能不熟悉的5个相关词
+4. 给出一个针对这批错词的3天快速复习方案
+
+请用简洁清晰的格式输出，方便家长理解。<button class="copy-btn" onclick="cp('pB',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">输入孩子实际错词</span><span class="tag">输出个性化诊断</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge bp">Prompt C</span><span class="card-title">按话题分组词单（更易记忆）</span></div>
+    <div class="card-desc">将词汇按话题分组，比按字母顺序记忆效率高2-3倍。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pC">请将以下初一英语核心词，按【话题】重新分组：
+
+【词单】：[粘贴词单]
+
+话题分类参考（可自行调整）：
+学校与学习 / 家庭与日常 / 食物与饮料 / 天气与自然 / 情绪与性格 / 时间与数字
+
+【输出要求】
+- 每个话题下列出该话题的词，并加一句「话题联想语」帮助记忆
+- 如果某个词属于多个话题，放在最主要的话题下
+- 最后推荐每个话题下 1 个「拓展词」（稍难但实用）<button class="copy-btn" onclick="cp('pC',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">话题分组</span><span class="tag">联想记忆</span></div>
+  </div>
+</div>
+
+<div id="step2" class="panel">
+  <div class="sec-head"><div class="sec-tag">STEP 02</div><div class="sec-title">语境记忆：每词3个场景句</div><div class="sec-desc">不背释义背用法，记住怎么用比记住什么意思更重要</div></div>
+  <div class="warn">研究表明：单词在不同语境中出现 6-7 次才能真正记住。传统背词书每个词只见一次，所以忘得快。AI 可以无限生成新场景句，这是它最大的优势。</div>
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt D</span><span class="card-title">生成生活场景句（单词精讲）</span></div>
+    <div class="card-desc">针对单个词，生成3个不同生活场景的例句，帮孩子在具体情境中记住用法。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pD">请帮我用「convenient」这个词，造3个不同场景的英语句子：
+
+场景要求：
+① 场景一：放学回家，妈妈问路线
+② 场景二：周末去超市购物
+③ 场景三：用手机叫外卖
+
+格式：
+- 英文句子（不超过15词，初一水平）
+- 中文翻译
+- 用中文说明这个词在这句话里的具体含义
+
+最后加一句：这个词最容易和哪个词混淆？怎么区分？
+
+【注意】：把「convenient」替换为你要学的单词即可复用。<button class="copy-btn" onclick="cp('pD',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">替换单词即可复用</span><span class="tag">贴近生活</span><span class="tag">含辨析</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt E</span><span class="card-title">批量生成语境句（一次处理10词）</span></div>
+    <div class="card-desc">效率版 Prompt，一次输入10个词，批量生成场景句，适合每天的词汇学习任务。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pE">请为以下10个词，各造2个场景例句：
+
+【词单】：
+1. achieve  2. environment  3. suggest
+4. although  5. probably  6. decision
+7. introduce  8. necessary  9. improve  10. polite
+
+要求：
+- 每个词给2个场景例句（场景不同）
+- 句子难度：初一水平，不超过15词
+- 格式：单词 → 例句1（中文）/ 例句2（中文）
+- 最后给出这10个词的「速记口诀」或「联想方法」各1条
+
+直接输出，不需要额外解释。<button class="copy-btn" onclick="cp('pE',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">批量处理</span><span class="tag">含速记方法</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge bp">Prompt F</span><span class="card-title">亲子互动：让 AI 出「猜词游戏」</span></div>
+    <div class="card-desc">把枯燥的背词变成游戏——AI 给出3条线索，孩子猜单词，家长陪玩。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pF">请为以下词单设计「猜词游戏」，我和孩子来玩：
+
+【词单】：[粘贴今天要学的10个词]
+
+规则：
+- 每个词给出3条中文线索（从难到易）
+- 线索1：用这个词造一个场景句（不含目标词，用"___"代替）
+- 线索2：描述这个词的词性和大概意思方向
+- 线索3：给出首字母和字母数量，如：c_____ (9字母)
+
+格式：
+第X题：
+线索1：___
+线索2：___
+线索3：___
+答案：[折叠，最后统一给出]
+
+输出20题，答案放在最后。<button class="copy-btn" onclick="cp('pF',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">亲子游戏化</span><span class="tag">三级线索</span><span class="tag">答案折叠</span></div>
+  </div>
+</div>
+
+<div id="step3" class="panel">
+  <div class="sec-head"><div class="sec-tag">STEP 03</div><div class="sec-title">AI 出题 + 即时纠错</div><div class="sec-desc">针对弱点无限出新题，错了立刻知道为什么</div></div>
+  <div class="tip">AI 出题的核心优势：针对孩子的错词定向出题，永远不重复，且做完即反馈。传统习题册做完就没有了，AI 可以无限续杯。</div>
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt G</span><span class="card-title">完形填空出题（单句版）</span></div>
+    <div class="card-desc">最常见的题型，适合每日10分钟快速练习，AI 出题后等孩子回答再给答案和解析。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pG">请用以下10个词出5道填空题，并严格按我说的步骤执行：
+
+【词单】：achieve, environment, suggest, although, probably,
+decision, introduce, necessary, improve, polite
+
+【步骤】
+第一步：出5道单句填空题（每题空一个词，题目用"___"表示）
+第二步：等待我的回答（我会在下一条消息输入答案）
+第三步：告诉我哪道题错了，并逐题解释：
+  - 正确答案是什么
+  - 为什么选这个词
+  - 这个词在这里是什么词性、什么意思
+  - 给一个额外的例句帮助记忆
+
+【注意】：请现在只输出第一步的5道题，不要提前给答案。<button class="copy-btn" onclick="cp('pG',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">分步骤执行</span><span class="tag">即时纠错</span><span class="tag">含解析</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt H</span><span class="card-title">错词专项强化题</span></div>
+    <div class="card-desc">专门针对反复错的词出题，每次练习都针对弱点，而不是把会的做一遍。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pH">我的孩子在以下单词上反复出错，请出一套专项练习：
+
+【反复错的词】：[填入孩子的错词，如：environment, decision, introduce]
+
+请设计3种不同题型，每种3道题：
+
+题型一：选择题（4个选项，其中2个是易混词）
+题型二：翻译填空（给中文句子，填对应英文词）
+题型三：判断改错（找出错误用法并改正）
+
+题目出完后等我回答，再给答案和解析。
+每个解析要包含：为什么这道题容易错。<button class="copy-btn" onclick="cp('pH',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">三种题型</span><span class="tag">错词专项</span><span class="tag">分析易错原因</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge bp">Prompt I</span><span class="card-title">模拟中考词汇题（提前感受题感）</span></div>
+    <div class="card-desc">初一就开始接触中考题型，让孩子知道「这些词最终怎么被考」。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pI">请模拟中考英语词汇题的出题风格，为以下词出题：
+
+【词单】：[填入词单]
+
+出题要求：
+- 语境完整（短文语境，不是孤立句子）
+- 考察方式：词义辨析 + 词性变化 + 固定搭配
+- 难度：初一学生需要思考但不会太难
+
+每道题出完后给出：
+① 标准答案
+② 解题思路（怎么从上下文判断）
+③ 这个考点在中考中的常见变形<button class="copy-btn" onclick="cp('pI',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">中考题型</span><span class="tag">语境完整</span><span class="tag">解题思路</span></div>
+  </div>
+</div>
+
+<div id="step4" class="panel">
+  <div class="sec-head"><div class="sec-tag">STEP 04</div><div class="sec-title">构词规律：一个词变十个词</div><div class="sec-desc">学会前缀/后缀规律，遇到新词能推断，才是真正的提速</div></div>
+  <div class="tip">初中词汇有清晰的构词规律。让 AI 整理词族树，孩子不用死记每个新词，而是通过规律推断——这是词汇量快速增长的杠杆。</div>
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt J</span><span class="card-title">前缀「un-」词族整理</span></div>
+    <div class="card-desc">从最常见的否定前缀开始，系统整理词族，举一反三。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pJ">请帮我整理初中英语中「un-」前缀的常见词，制作词族树：
+
+要求：
+1. 列出20个含「un-」的初中常用词
+2. 用树形结构展示（根词 → un+根词 的对应关系）
+3. 每对词给出：含义变化规律 + 各一个例句
+4. 找出3个「陷阱词」：加了 un- 但意思不是简单否定的词
+5. 最后出5道练习题（看词根猜 un- 词的意思）
+
+注意：以初中教材范围为主，不要出现生僻词。<button class="copy-btn" onclick="cp('pJ',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">前缀系统整理</span><span class="tag">词族树</span><span class="tag">含陷阱词</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt K</span><span class="card-title">后缀「-ful / -less」对比记忆</span></div>
+    <div class="card-desc">一对意思相反的后缀，放在一起学，对比记忆效率最高。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pK">请帮我对比整理「-ful」和「-less」两个后缀：
+
+任务一：各列出15个初中常用词，制作对比表格：
+根词 | 加-ful | 含义 | 加-less | 含义
+
+任务二：找出5个只有-ful没有-less版本（或反之）的词，并解释原因
+
+任务三：造5对对比句（同一场景，用-ful和-less各描述一次）
+
+任务四：出小测验——给出10个根词，让孩子说出
+-ful和-less形式及含义（先不给答案，等我发送后再批改）<button class="copy-btn" onclick="cp('pK',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">对比学习</span><span class="tag">含对比句</span><span class="tag">边学边测</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge bp">Prompt L</span><span class="card-title">全套构词规律速查表（可打印）</span></div>
+    <div class="card-desc">一次生成整张初中构词规律表，打印出来贴在书桌旁，随时查阅。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pL">请为初中生（初一到初三）生成一张「英语构词规律速查表」：
+
+Part A：否定前缀（5个）
+每个前缀：含义 + 5个初中例词 + 记忆口诀
+
+Part B：常用后缀（10个）
+名词后缀（-tion, -ness, -ment, -er）
+形容词后缀（-ful, -less, -able, -ous）
+副词后缀（-ly）
+每个后缀：含义 + 词性变化 + 3个例词
+
+Part C：初中最常考的词根（5个）
+每个词根：含义 + 5个含该词根的词
+
+【要求】仅限初中教材范围，用表格格式，适合打印
+最后附：「用构词法猜词」的3步思路<button class="copy-btn" onclick="cp('pL',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">适合打印</span><span class="tag">速查表格式</span><span class="tag">覆盖初中全阶段</span></div>
+  </div>
+</div>
+
+<div id="plan" class="panel">
+  <div class="sec-head"><div class="sec-tag">PLAN</div><div class="sec-title">6周暑假补词计划</div><div class="sec-desc">每天 15-20 分钟，家长陪学路线图</div></div>
+  <div class="tip">不需要每天很长时间，关键是坚持。每天15-20分钟，6周下来可以稳固掌握500-600个新词，覆盖初一上学期大部分词汇需求。</div>
+  <div class="plan-grid">
+    <div class="plan-card"><div class="plan-week">第 1-2 周</div><div class="plan-title">词单 + 语境句</div><div class="plan-desc">每天20个新词。用 Prompt A 生成词单，Prompt D 造场景句，亲子朗读。以「看到能认出」为目标，不要求默写。</div></div>
+    <div class="plan-card"><div class="plan-week">第 3-4 周</div><div class="plan-title">AI 出题 + 纠错</div><div class="plan-desc">每天复习旧词 + 做10道 Prompt G 的填空题。遇到错词记下，用 Prompt H 出专项题再巩固。</div></div>
+    <div class="plan-card"><div class="plan-week">第 5 周</div><div class="plan-title">构词规律系统学</div><div class="plan-desc">用 Prompt J/K 学前缀后缀，每天1个规律。配合 Prompt L 生成速查表贴在书桌旁。</div></div>
+    <div class="plan-card"><div class="plan-week">第 6 周</div><div class="plan-title">综合复习 + 阅读</div><div class="plan-desc">用 Prompt B 再做一次诊断，找剩余漏洞。同时开始接触简单英语阅读材料。</div></div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-head"><span class="badge bp">Prompt M</span><span class="card-title">让 AI 生成个性化6周计划</span></div>
+    <div class="card-desc">把孩子的具体情况告诉 AI，生成完全个性化的每日学习计划表。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pM">请帮我为孩子制定一个6周暑假英语词汇补习计划：
+
+【孩子情况】
+- 年级：即将升初一
+- 教材版本：人教版（可替换）
+- 当前词汇量：约600词
+- 每天可用时间：15-20分钟
+- 薄弱点：[填入，如：抽象词、多义词]
+- 家长是否陪同：是/否
+
+【计划要求】
+- 按周输出，每周有明确目标和任务
+- 每日任务具体到：学哪些词、用什么方法、花多少时间
+- 第1、3、5周末安排一次小测验
+- 包含：怎么判断孩子掌握了（达标标准）
+- 计划不要太满，要现实可执行
+
+请输出成表格或清单格式，方便打印。<button class="copy-btn" onclick="cp('pM',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">个性化定制</span><span class="tag">可打印格式</span><span class="tag">含达标标准</span></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt N</span><span class="card-title">每周复盘：让 AI 评估学习效果</span></div>
+    <div class="card-desc">每周末用5分钟做一次复盘，找出下周需要强化的重点。</div>
+    <div class="prompt-wrap"><div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+    <div class="prompt-box" id="pN">我的孩子完成了本周的英语词汇学习，请帮我做复盘：
+
+【本周学习情况】
+- 学了哪些词：[列出本周词单]
+- 测验得分：[如：10题对7题]
+- 反复错的词：[列出]
+- 孩子的自我感受：[容易/还好/有点难]
+
+请帮我：
+1. 评估本周完成情况（哪里做得好？哪里需要加强？）
+2. 分析反复错的词，找共同规律
+3. 给出下周的重点调整建议（不需要推翻计划，只是微调）
+4. 给孩子一句鼓励的话（用英语，附中文翻译）
+
+输出简洁，家长5分钟内能读完。<button class="copy-btn" onclick="cp('pN',this)">复制</button></div></div>
+    <div class="tags"><span class="tag">每周复盘</span><span class="tag">调整计划</span><span class="tag">正向鼓励</span></div>
+  </div>
+</div>
+
+</main>
+<footer>AI英语工具集 · 词汇模块 · Prompt A 至 N · 共14个</footer>
+
+<script>
+function showTab(id,idx){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  window.scrollTo({top:document.querySelector('.tab-bar').offsetTop-60,behavior:'smooth'});
+}
+function cp(id,btn){
+  const t=document.getElementById(id).innerText.replace(/复制|已复制/g,'').trim();
+  navigator.clipboard.writeText(t).catch(()=>{
+    const a=document.createElement('textarea');a.value=t;
+    document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);
+  });
+  btn.textContent='已复制';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent='复制';btn.classList.remove('ok')},2000);
+}
+</script>
+</body>
+</html>

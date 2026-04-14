@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>听力突破 · AI英语工具集</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0e14;--bg2:#111420;--bg3:#161928;
+  --surface:#1c2030;--surface2:#222638;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#dde2f0;--text2:#8a90a8;--text3:#585e78;
+  --accent:#7b9ef8;--accent2:rgba(123,158,248,0.13);
+  --teal:#56d4b8;--teal2:rgba(86,212,184,0.12);
+  --coral:#ff7eb3;--coral2:rgba(255,126,179,0.12);
+  --purple:#c8a8f4;--purple2:rgba(200,168,244,0.12);
+}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+.suite-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.suite-logo{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;padding:14px 20px 14px 0;border-right:1px solid var(--border);white-space:nowrap;margin-right:16px}
+.suite-link{padding:14px 14px;font-size:12px;color:var(--text3);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-weight:500}
+.suite-link:hover{color:var(--text)}.suite-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+.hero{padding:56px 40px 48px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'LISTEN';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:140px;font-weight:900;color:rgba(123,158,248,0.04);line-height:1;pointer-events:none;letter-spacing:-4px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--accent);margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.15;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:14px;color:var(--text2);max-width:500px}
+.hero-stats{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap}
+.hstat{border-left:2px solid var(--accent);padding-left:12px}
+.hstat-n{font-family:'DM Mono',monospace;font-size:24px;color:var(--accent)}
+.hstat-l{font-size:11px;color:var(--text3);margin-top:2px}
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 18px;font-size:13px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:'Noto Sans SC',sans-serif}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+main{max-width:860px;margin:0 auto;padding:40px 24px 80px}
+.panel{display:none}.panel.active{display:block}
+.sec-head{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--accent);margin-bottom:8px}
+.sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text2)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;white-space:nowrap}
+.ba{background:var(--accent2);color:var(--accent)}
+.bt{background:var(--teal2);color:var(--teal)}
+.bc{background:var(--coral2);color:var(--coral)}
+.bp{background:var(--purple2);color:var(--purple)}
+.card-title{font-size:14px;font-weight:700;color:var(--text)}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.prompt-wrap{margin-top:14px;border-top:1px dashed var(--border);padding-top:14px}
+.prompt-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:8px}
+.prompt-box{background:#080a10;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;color:#b8c0d8;white-space:pre-wrap;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--border2);color:var(--text3);padding:4px 10px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--accent)}.copy-btn.ok{color:var(--teal);border-color:rgba(86,212,184,0.3)}
+.tip{background:var(--accent2);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--accent);margin-bottom:16px;line-height:1.6}
+.warn{background:var(--coral2);border-left:2px solid var(--coral);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--coral);margin-bottom:16px;line-height:1.6}
+.method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:16px 0}
+.method-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.method-num{font-family:'DM Mono',monospace;font-size:20px;color:var(--accent);line-height:1;margin-bottom:6px}
+.method-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.method-desc{font-size:11px;color:var(--text3);line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--text3);background:var(--surface)}
+footer{text-align:center;padding:28px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);font-family:'DM Mono',monospace}
+@media(max-width:600px){.hero{padding:36px 20px 32px}.hero::before{font-size:80px}main{padding:28px 16px 60px}.suite-nav,.tab-bar{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<nav class="suite-nav">
+  <div class="suite-logo">AI英语工具集</div>
+  <a class="suite-link" href="grammar.html">语法</a>
+  <a class="suite-link" href="writing.html">写作</a>
+  <a class="suite-link active" href="listening.html">听力</a>
+  <a class="suite-link" href="reading.html">阅读</a>
+  <a class="suite-link" href="vocab.html">词汇</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">MODULE 03 · LISTENING</div>
+  <h1>听力<span>突破</span><br>AI辅助工具</h1>
+  <p>精听训练 + 材料生成 + 速记方法，AI让听力从「靠感觉」变成「有方法」</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">9</div><div class="hstat-l">套 Prompt 模板</div></div>
+    <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">训练阶段</div></div>
+    <div class="hstat"><div class="hstat-n">5</div><div class="hstat-l">听力题型</div></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview')">总览</button>
+  <button class="tab-btn" onclick="showTab('method')">训练方法</button>
+  <button class="tab-btn" onclick="showTab('material')">AI生成材料</button>
+  <button class="tab-btn" onclick="showTab('dictation')">精听&默写</button>
+  <button class="tab-btn" onclick="showTab('exam')">考试题型</button>
+</div>
+
+<main>
+
+<div id="overview" class="panel active">
+  <div class="sec-head">
+    <div class="sec-tag">OVERVIEW</div>
+    <div class="sec-title">听力为什么难提升？</div>
+    <div class="sec-desc">听力是被忽视最久、方法最少的专项——直到考前一周才临时抱佛脚</div>
+  </div>
+  <div class="warn">大多数学生听力失分的真实原因不是「没有听力天赋」，而是：从来没有系统练过，只是偶尔做几道题。AI可以解决「高质量材料稀缺」和「缺乏即时反馈」这两个核心问题。</div>
+  <div class="method-grid">
+    <div class="method-card">
+      <div class="method-num">01</div>
+      <div class="method-title">泛听打底</div>
+      <div class="method-desc">大量接触英语声音，培养语感，适合初期基础建立</div>
+    </div>
+    <div class="method-card">
+      <div class="method-num">02</div>
+      <div class="method-title">精听训练</div>
+      <div class="method-desc">逐句听写，精确到每个词，这是最有效的提升方法</div>
+    </div>
+    <div class="method-card">
+      <div class="method-num">03</div>
+      <div class="method-title">题型训练</div>
+      <div class="method-desc">针对考试题型练习抓关键词、预判问题</div>
+    </div>
+    <div class="method-card">
+      <div class="method-num">04</div>
+      <div class="method-title">AI辅助</div>
+      <div class="method-desc">生成材料、出题、分析错误——AI补齐人工教学的空白</div>
+    </div>
+  </div>
+  <div class="tip">AI无法「播放」声音，但它可以：①生成适合孩子水平的听力文本 ②出配套题目 ③分析做题逻辑 ④推荐具体的听力资源。搭配真实音频使用效果最佳。</div>
+</div>
+
+<div id="method" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">METHOD</div>
+    <div class="sec-title">科学训练方法</div>
+    <div class="sec-desc">精听是核心，配合AI使用效率翻倍</div>
+  </div>
+  <div class="tip">「精听」的本质：听一段15-30秒的音频，反复听直到能默写出每一个词，再看文本校对。一天30分钟精听，比一次性听2小时泛听效果好10倍。</div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt L-01</span><span class="card-title">精听材料生成（按水平定制）</span></div>
+    <div class="card-desc">让AI生成适合孩子水平的听力文本，配合TTS工具（文字转语音）使用。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l01">请为我生成一篇英语听力练习材料：
+
+【参数设置】
+- 目标年级：[初一/初二/初三/高一/高二/高三]
+- 难度级别：[基础/标准/挑战]
+- 话题类型：[日常对话/学校生活/旅游出行/科技环境/文化习俗]
+- 时长：约60-90秒（正常语速朗读）
+- 体裁：[对话（2人）/ 独白（叙述） / 新闻简讯]
+
+【生成要求】
+1. 词汇难度与年级匹配（不用生僻词）
+2. 语速提示：[慢速/标准/快速]——在文本开头注明
+3. 语音提示：英式发音 / 美式发音
+
+【配套输出】
+文本主体：完整听力材料（用于TTS朗读）
+
+配套题目（5道）：
+- 细节理解题×3
+- 推断题×1
+- 主旨大意题×1
+
+答案和解析：单独放在最后，用---分隔
+
+【特别说明】
+材料要真实自然，不要太刻意「教学化」。对话要有口语感，独白要有逻辑层次。<button class="copy-btn" onclick="cp('l01',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">可定制参数</span><span class="tag">含配套题目</span><span class="tag">配合TTS使用</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt L-02</span><span class="card-title">精听步骤指导（一次搞懂精听怎么练）</span></div>
+    <div class="card-desc">很多人知道「精听」但不知道具体怎么操作，AI给出标准化流程。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l02">请教我「精听训练法」的完整操作步骤：
+
+我的情况：[初三学生 / 听力基础一般 / 每天可用时间30分钟]
+
+请输出：
+
+【精听标准流程（7步）】
+每步：做什么 + 花多少时间 + 注意什么
+
+【工具推荐】
+- 哪个APP可以调节播放速度？（0.75倍速练习）
+- 哪些资源适合初中精听？（免费优先）
+- 如何配合使用文字稿？
+
+【常见错误】
+精听时最容易犯的3个错误，以及如何避免
+
+【进度判断】
+怎么知道自己精听进步了？有什么可量化的指标？
+
+【一周精听计划】
+周一到周日，每天精听什么，怎么安排30分钟
+
+最后：给我一段50词左右的英文文本作为今天的精听练习材料（初三水平），配3道默写题（听完写出空白处的词）<button class="copy-btn" onclick="cp('l02',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">精听完整流程</span><span class="tag">工具推荐</span><span class="tag">进度判断</span></div>
+  </div>
+</div>
+
+<div id="material" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">MATERIAL</div>
+    <div class="sec-title">AI生成听力材料</div>
+    <div class="sec-desc">按话题、难度、题型定制，解决「高质量材料找不到」的问题</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bc">Prompt L-03</span><span class="card-title">对话类听力材料（模拟真实对话）</span></div>
+    <div class="card-desc">生成自然口语化的双人对话，最常见的听力题型。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l03">请生成一段听力对话练习材料：
+
+【场景】：[从以下选一个或自定义]
+A. 两个同学讨论周末计划
+B. 学生和老师谈期中考试准备
+C. 父母和孩子讨论兴趣班选择
+D. 朋友之间推荐一本书/电影
+E. 自定义：_______
+
+【对话设计要求】
+- 人物：A（[身份]）和 B（[身份]）
+- 长度：15-20个来回（约90秒朗读）
+- 语言风格：自然口语化，带缩写（I'm, don't, can't）
+- 包含：1-2处信息量大的细节（电话号码/时间/地点）——这些是考试常考的
+
+【配套题目】（6道）
+听力后：
+- 基本信息题×2（who/what/when/where）
+- 细节推断题×2（why/how）
+- 态度理解题×1（A对某件事的看法）
+- 错误信息辨别×1（哪项与对话不符）
+
+答案放最后，用===分隔<button class="copy-btn" onclick="cp('l03',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">对话类</span><span class="tag">6种题型</span><span class="tag">自然口语</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt L-04</span><span class="card-title">独白类/新闻类听力材料</span></div>
+    <div class="card-desc">高考听力后半段多为独白，需要专项训练信息提取能力。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l04">请生成一段「独白类」听力练习材料：
+
+【类型】：[学校广播通知 / 旅游景点介绍 / 人物故事 / 科普短文]
+【话题】：[填入具体话题，如：一位科学家的故事]
+【难度】：[高一 / 高二 / 高考水平]
+【时长】：约120秒（正常语速）
+
+【独白结构要求】
+- 开头：主题引入（2-3句）
+- 主体：3个信息点（逻辑清晰，信息密度适中）
+- 结尾：总结/呼吁（1-2句）
+
+【语言要求】
+- 使用连接词让逻辑清晰（firstly/however/as a result...）
+- 语速：标准考试速度（不要太慢）
+- 偶尔有重复/停顿，模拟真实语音
+
+【配套填写题】（最常考题型）
+生成一张「信息摘录表」，学生边听边填写：
+[表格形式，有空格让学生填写关键信息]
+
+答案与解析放在===后面<button class="copy-btn" onclick="cp('l04',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">独白类</span><span class="tag">信息摘录表</span><span class="tag">高考题型</span></div>
+  </div>
+</div>
+
+<div id="dictation" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">DICTATION</div>
+    <div class="sec-title">精听与听写训练</div>
+    <div class="sec-desc">听写是检验听力理解最准确的方式，也是提升最快的方法</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bp">Prompt L-05</span><span class="card-title">听写文本 + 自动批改</span></div>
+    <div class="card-desc">把自己听写的内容发给AI，AI对照原文批改，找出听错的规律。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l05">请帮我批改听写练习，并分析我的错误规律：
+
+【原文（听力材料）】：
+[粘贴原始文本]
+
+【我的听写结果】：
+[粘贴我听写的内容]
+
+请完成：
+
+1. 逐词对比，标出以下类型的错误：
+   [漏听] = 原文有但我没写的词
+   [听错] = 我写了但内容不正确的词
+   [误加] = 原文没有但我多写了的词
+
+2. 统计错误类型比例
+   漏听：X处 / 听错：X处 / 误加：X处
+
+3. 错误规律分析
+   哪类音标最容易听错？（如：/θ/ vs /s/）
+   哪类词最容易漏听？（如：冠词、介词）
+   是整体节奏跟不上，还是个别音不熟？
+
+4. 针对性练习建议
+   根据我的错误，推荐3个具体的练习方向（不是泛泛的「多听」）<button class="copy-btn" onclick="cp('l05',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">听写批改</span><span class="tag">错误分类</span><span class="tag">规律分析</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt L-06</span><span class="card-title">音标弱点专项训练</span></div>
+    <div class="card-desc">很多听力错误来自音标不准——听到音却想不起对应的单词。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l06">请帮我进行音标辨音专项训练：
+
+【我的问题】：[填入具体问题，如：分不清 /æ/ 和 /e/ / 听不出 /θ/ / 连读后就不认识了]
+
+请完成：
+
+【音标讲解】
+用中文解释这个音标的发音方法
+对比容易混淆的相近音
+给出「发音口型」描述（因为看不到图，用文字描述嘴型）
+
+【最常见的听力陷阱词】
+列出20个含这个音标、在听力中高频出现的单词
+这些词「听起来像什么」——中国学生容易把它误听成哪个词？
+
+【辨音练习】
+给出10对最小对立音（minimal pairs）
+如：ship / sheep、bit / beat
+每对词造一个句子，让我听出用的是哪个词
+
+【连读规律讲解】（如果问题是连读）
+英语5大连读规律 + 各3个例子
+让我把这5个规律写下来，我发给你检查<button class="copy-btn" onclick="cp('l06',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">音标辨音</span><span class="tag">最小对立音</span><span class="tag">连读规律</span></div>
+  </div>
+</div>
+
+<div id="exam" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">EXAM</div>
+    <div class="sec-title">考试题型专项</div>
+    <div class="sec-desc">中考高考听力题型拆解，每种题型有不同的做题策略</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt L-07</span><span class="card-title">考试听力做题策略讲解</span></div>
+    <div class="card-desc">听力不只靠「听懂」，做题技巧可以让你在没完全听懂的情况下得更多分。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l07">请教我中考/高考英语听力的考场策略：
+
+【我的考试类型】：[中考 / 高考]
+
+请系统讲解：
+
+【播音前（预判阶段）】
+拿到试卷有多少时间预读？
+预读时看什么？怎么在题目中找「关键词」？
+如何预判这段对话/独白的话题？
+
+【听的过程（抓取阶段）】
+哪类信息必须在第一遍抓到？
+哪类信息可以等第二遍？
+数字/时间/地点的速记符号（教我一套简单的速记法）
+遇到听不懂的词，怎么办？
+
+【选择时（判断阶段）】
+4个选项，如何快速排除干扰项？
+「同义替换」是考试最常考的——给3个例子
+哪些选项特征说明「通常是对的」或「通常是错的」？
+
+【常见陷阱】
+中考/高考听力的5个经典设题陷阱
+每个陷阱举一个例子，说明怎么识别
+
+最后：给出「听力考场心态」建议——遇到完全没听懂怎么办？<button class="copy-btn" onclick="cp('l07',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">考场策略</span><span class="tag">速记法</span><span class="tag">陷阱识别</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bc">Prompt L-08</span><span class="card-title">模拟听力套题（含解析）</span></div>
+    <div class="card-desc">AI生成一套完整模拟听力题，带文本和详细解析，做完即批改。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="l08">请生成一套完整的模拟听力练习题（中考/高考格式）：
+
+【考试类型】：[中考（共25分）/ 高考（共30分）]
+
+【题目结构（中考格式示例）】
+第一节：短对话（5段，每段1题，选择题）
+第二节：长对话（2段，每段2-3题，选择题）
+第三节：独白（1段，4题，选择题/填写题）
+
+【生成要求】
+1. 生成所有听力文本（标注语速：standard pace）
+2. 所有题目（选择题标明ABCD）
+3. 文本和题目之间用---分隔
+
+然后等我回答后，给出：
+- 答案
+- 每道题的解析（重点说明「为什么不选其他项」）
+- 评分：X/25分
+- 这次练习我最需要注意的1个问题<button class="copy-btn" onclick="cp('l08',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">完整套题</span><span class="tag">三节结构</span><span class="tag">含干扰项解析</span></div>
+  </div>
+</div>
+
+</main>
+<footer>AI英语工具集 · 听力模块 · Prompt L-01 至 L-08</footer>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:document.querySelector('.tab-bar').offsetTop-60,behavior:'smooth'});
+}
+function cp(id,btn){
+  const t=document.getElementById(id).innerText.replace(/复制|已复制/g,'').trim();
+  navigator.clipboard.writeText(t).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a)});
+  btn.textContent='已复制';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent='复制';btn.classList.remove('ok')},2000);
+}
+</script>
+</body>
+</html>
