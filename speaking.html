@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>口语训练 · AI英语工具集</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#100c10;--bg2:#161216;--bg3:#1c181c;
+  --surface:#221e22;--surface2:#2a262a;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#ede8f0;--text2:#9e98a8;--text3:#685e72;
+  --accent:#e879a0;--accent2:rgba(232,121,160,0.14);
+  --teal:#34d399;--teal2:rgba(52,211,153,0.12);
+  --amber:#fbbf24;--amber2:rgba(251,191,36,0.12);
+  --blue:#60a5fa;--blue2:rgba(96,165,250,0.12);
+  --purple:#c084fc;--purple2:rgba(192,132,252,0.12);
+}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+
+/* NAV */
+.suite-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.suite-logo{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;padding:14px 20px 14px 0;border-right:1px solid var(--border);white-space:nowrap;margin-right:16px;text-decoration:none}
+.suite-link{padding:14px 14px;font-size:12px;color:var(--text3);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-weight:500}
+.suite-link:hover{color:var(--text)}
+.suite-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* HERO */
+.hero{padding:56px 40px 48px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'SPEAK';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:140px;font-weight:900;color:rgba(232,121,160,0.04);line-height:1;pointer-events:none;letter-spacing:-4px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--accent);margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.15;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:14px;color:var(--text2);max-width:500px}
+.hero-stats{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap}
+.hstat{border-left:2px solid var(--accent);padding-left:12px}
+.hstat-n{font-family:'DM Mono',monospace;font-size:24px;color:var(--accent)}
+.hstat-l{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* TABS */
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 18px;font-size:13px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:'Noto Sans SC',sans-serif}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* LAYOUT */
+main{max-width:860px;margin:0 auto;padding:40px 24px 80px}
+.panel{display:none}.panel.active{display:block}
+
+/* SECTION */
+.sec-head{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--accent);margin-bottom:8px}
+.sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text2)}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;white-space:nowrap}
+.ba{background:var(--accent2);color:var(--accent)}
+.bt{background:var(--teal2);color:var(--teal)}
+.bam{background:var(--amber2);color:var(--amber)}
+.bb{background:var(--blue2);color:var(--blue)}
+.bp{background:var(--purple2);color:var(--purple)}
+.card-title{font-size:14px;font-weight:700;color:var(--text)}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* PROMPT */
+.prompt-wrap{margin-top:14px;border-top:1px dashed var(--border);padding-top:14px}
+.prompt-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.1em;margin-bottom:8px}
+.prompt-box{background:#0c080c;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;color:#c8b8d0;white-space:pre-wrap;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--border2);color:var(--text3);padding:4px 10px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--accent)}
+.copy-btn.ok{color:var(--teal);border-color:rgba(52,211,153,0.3)}
+
+/* CALLOUTS */
+.tip{background:var(--teal2);border-left:2px solid var(--teal);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--teal);margin-bottom:16px;line-height:1.6}
+.warn{background:var(--accent2);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--accent);margin-bottom:16px;line-height:1.6}
+.note{background:var(--amber2);border-left:2px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--amber);margin-bottom:16px;line-height:1.6}
+
+/* OVERVIEW GRID */
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:16px 0}
+.ov-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s}
+.ov-card:hover{border-color:var(--accent)}
+.ov-num{font-family:'DM Mono',monospace;font-size:26px;color:var(--accent);line-height:1;margin-bottom:6px}
+.ov-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.ov-desc{font-size:12px;color:var(--text3);line-height:1.5}
+
+/* SCENE GRID */
+.scene-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:16px 0}
+.scene-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.scene-icon{font-size:22px;margin-bottom:8px;line-height:1}
+.scene-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.scene-desc{font-size:11px;color:var(--text3);line-height:1.5}
+
+/* ISSUE TABLE */
+.issue-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
+.issue-table th{background:var(--surface);color:var(--text2);font-weight:500;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.issue-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.issue-table td:first-child{color:var(--accent);font-family:'DM Mono',monospace;font-size:11px;white-space:nowrap}
+.issue-table tr:last-child td{border-bottom:none}
+
+/* STEP ROW */
+.step-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.step-dot{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-text{font-size:13px;color:var(--text2);line-height:1.6;padding-top:3px}
+
+/* EXAM GRID */
+.exam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:16px 0}
+.exam-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.exam-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:6px;letter-spacing:.06em}
+.exam-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.exam-desc{font-size:11px;color:var(--text3);line-height:1.6}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--text3);background:var(--surface)}
+
+footer{text-align:center;padding:28px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);font-family:'DM Mono',monospace}
+
+@media(max-width:600px){
+  .hero{padding:36px 20px 32px}
+  .hero::before{font-size:80px}
+  main{padding:28px 16px 60px}
+  .suite-nav,.tab-bar{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<nav class="suite-nav">
+  <a class="suite-logo" href="index.html">AI英语工具集</a>
+  <a class="suite-link" href="grammar.html">语法</a>
+  <a class="suite-link" href="writing.html">写作</a>
+  <a class="suite-link" href="listening.html">听力</a>
+  <a class="suite-link" href="reading.html">阅读</a>
+  <a class="suite-link" href="vocab.html">词汇</a>
+  <a class="suite-link active" href="speaking.html">口语</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">MODULE 06 · SPEAKING</div>
+  <h1>口语<span>训练</span><br>AI辅助工具</h1>
+  <p>AI陪练对话 · 发音纠错 · 场景模拟 · 中考高考口语备考，从「不敢开口」到「流利表达」</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">12</div><div class="hstat-l">套 Prompt 模板</div></div>
+    <div class="hstat"><div class="hstat-n">6</div><div class="hstat-l">训练场景</div></div>
+    <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">能力层级</div></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview',0)">总览</button>
+  <button class="tab-btn" onclick="showTab('problems',1)">口语痛点</button>
+  <button class="tab-btn" onclick="showTab('roleplay',2)">场景对话练习</button>
+  <button class="tab-btn" onclick="showTab('fluency',3)">流利度训练</button>
+  <button class="tab-btn" onclick="showTab('pronunciation',4)">发音纠错</button>
+  <button class="tab-btn" onclick="showTab('exam',5)">考试口语专项</button>
+  <button class="tab-btn" onclick="showTab('daily',6)">每日口语计划</button>
+</div>
+
+<main>
+
+<!-- ── OVERVIEW ── -->
+<div id="overview" class="panel active">
+  <div class="sec-head">
+    <div class="sec-tag">OVERVIEW</div>
+    <div class="sec-title">口语训练全套方案</div>
+    <div class="sec-desc">AI陪练的核心优势：永远不嫌你慢，随时可练，没有社交压力</div>
+  </div>
+
+  <div class="warn">口语是最被忽视的专项——因为「找不到练习对象」。AI 彻底解决这个问题：它是永远有耐心的对话伙伴，可以扮演任意角色，帮你在真实场景中反复练习，直到流利。</div>
+
+  <div class="ov-grid">
+    <div class="ov-card" onclick="showTab('problems',1)">
+      <div class="ov-num">01</div>
+      <div class="ov-title">口语痛点分析</div>
+      <div class="ov-desc">「哑巴英语」的真实原因，不是词汇不够，而是输出路径没建立</div>
+    </div>
+    <div class="ov-card" onclick="showTab('roleplay',2)">
+      <div class="ov-num">02</div>
+      <div class="ov-title">场景对话练习</div>
+      <div class="ov-desc">6大生活场景模拟：购物/问路/学校/朋友/旅游/面试</div>
+    </div>
+    <div class="ov-card" onclick="showTab('fluency',3)">
+      <div class="ov-num">03</div>
+      <div class="ov-title">流利度训练</div>
+      <div class="ov-desc">消除中式英语、填充词过多、停顿过长的专项方法</div>
+    </div>
+    <div class="ov-card" onclick="showTab('pronunciation',4)">
+      <div class="ov-num">04</div>
+      <div class="ov-title">发音纠错</div>
+      <div class="ov-desc">AI分析中国学生高频发音错误，给出文字版纠正方法</div>
+    </div>
+    <div class="ov-card" onclick="showTab('exam',5)">
+      <div class="ov-num">05</div>
+      <div class="ov-title">考试口语专项</div>
+      <div class="ov-desc">中考英语口试 · 高中英语口试 · 模拟考官对话练习</div>
+    </div>
+    <div class="ov-card" onclick="showTab('daily',6)">
+      <div class="ov-num">06</div>
+      <div class="ov-title">每日口语计划</div>
+      <div class="ov-desc">15分钟日计划，从初级到进阶，可持续的练习节奏</div>
+    </div>
+  </div>
+
+  <div class="tip">使用建议：把 AI 当成「私人外教」。先说出你的英语，再把你说的内容打成文字发给 AI，让它纠错和示范更好的表达。配合朗读练习效果最佳。</div>
+</div>
+
+<!-- ── PROBLEMS ── -->
+<div id="problems" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">ANALYSIS</div>
+    <div class="sec-title">口语痛点分析</div>
+    <div class="sec-desc">「哑巴英语」背后的真实原因，对症才能下药</div>
+  </div>
+
+  <div class="warn">大多数学生学了6年英语，却不敢开口说一句完整的话。问题不是「英语不够好」，而是从来没有练过「说」这个动作本身。</div>
+
+  <table class="issue-table">
+    <tr><th>痛点</th><th>真实原因</th><th>AI 能做什么</th></tr>
+    <tr><td>不敢开口</td><td>怕说错、怕被笑，心理障碍大于能力障碍</td><td>AI 没有评判，降低心理压力，先开口再求好</td></tr>
+    <tr><td>词汇够但说不出</td><td>认识单词但没有「说出来」的肌肉记忆</td><td>让 AI 出场景题，强迫用已知词汇即兴表达</td></tr>
+    <tr><td>句子太短</td><td>习惯说单词或短句，不会展开</td><td>AI 要求每次回答不少于3句，并示范如何展开</td></tr>
+    <tr><td>中式英语严重</td><td>直接把中文翻译成英文，表达不地道</td><td>AI 对比「中式表达」和「地道表达」，逐句纠正</td></tr>
+    <tr><td>填充词泛滥</td><td>um/uh/so/like 成为口头禅，显得不流利</td><td>AI 教替换策略，训练用短暂停顿代替填充词</td></tr>
+    <tr><td>发音不准</td><td>某些音标从未练过，说出来别人听不懂</td><td>AI 列出高频错误音，文字说明正确口型和方法</td></tr>
+  </table>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt S-01</span><span class="card-title">口语能力自我诊断</span></div>
+    <div class="card-desc">先摸清楚自己的真实口语水平，再针对性训练，避免做无效练习。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s01">请帮我做一次英语口语能力诊断：
+
+【我的基本情况】
+- 年级：[初一/初二/初三/高中]
+- 英语成绩大概：[填写]
+- 口语练习经历：[几乎没有 / 偶尔课堂发言 / 有补课或参赛经历]
+- 最大的口语困扰：[填写，如：不敢开口 / 说不了完整句子 / 发音问题]
+
+【诊断方式】
+请给我出3道口语题（用文字回答即可）：
+① 介绍你自己（30秒内能说什么？）
+② 描述你昨天做了什么
+③ 说说你最喜欢的一本书或电影，以及原因
+
+我用中文或英文打出我的回答，你来分析：
+- 我实际处于哪个口语水平（A1-B2）？
+- 最突出的3个问题是什么？
+- 建议从哪个方面开始练习？
+
+请先出题，等我回答后再分析。<button class="copy-btn" onclick="cp('s01',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">能力诊断</span><span class="tag">分级评估</span><span class="tag">针对性建议</span></div>
+  </div>
+</div>
+
+<!-- ── ROLEPLAY ── -->
+<div id="roleplay" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">ROLE PLAY</div>
+    <div class="sec-title">场景对话练习</div>
+    <div class="sec-desc">6大生活场景，AI扮演对话角色，模拟真实交流环境</div>
+  </div>
+
+  <div class="tip">场景练习的正确方式：把你说的话打成文字发给 AI → AI 扮演对方角色回应 → 对话结束后 AI 总结你的表达问题和更好的说法。</div>
+
+  <div class="scene-grid">
+    <div class="scene-card">
+      <div class="scene-icon">🏫</div>
+      <div class="scene-title">学校场景</div>
+      <div class="scene-desc">问老师问题、和同学讨论、课堂发言</div>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon">🛒</div>
+      <div class="scene-title">购物场景</div>
+      <div class="scene-desc">问价格、找商品、讨价还价、退换货</div>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon">🗺️</div>
+      <div class="scene-title">问路场景</div>
+      <div class="scene-desc">问方向、描述位置、乘坐交通工具</div>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon">✈️</div>
+      <div class="scene-title">旅游场景</div>
+      <div class="scene-desc">订酒店、景点介绍、遇到问题求助</div>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon">👥</div>
+      <div class="scene-title">社交场景</div>
+      <div class="scene-desc">自我介绍、交朋友、日常闲聊话题</div>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon">🎤</div>
+      <div class="scene-title">演讲/汇报</div>
+      <div class="scene-desc">班级发言、英语演讲、小组汇报</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt S-02</span><span class="card-title">场景对话陪练（通用模板）</span></div>
+    <div class="card-desc">替换场景名称即可适用所有场景，AI 扮演对话对象，练完给反馈。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s02">请和我做一个英语口语场景练习：
+
+【场景设定】：[填入场景，如：我在一家英国超市买东西，你扮演收银员]
+【我的年级/水平】：[初二 / 高一 / 日常交流水平]
+【练习目标】：[流利表达 / 学习特定句型 / 模拟考试口语]
+
+【对话规则】
+1. 你先说第一句话，开始这个场景
+2. 我用文字打出我的英文回应（模拟我说出来的话）
+3. 你继续扮演角色推进对话，遇到我表达有严重问题时可以在括号里轻轻提示
+4. 对话进行5-8个来回后，自然结束
+
+【对话结束后，请给出反馈】
+① 找出我说的3个最需要改进的表达（列出原句 → 更好的说法）
+② 这个场景中最实用的3个句型（你可能用到但没用上的）
+③ 一句鼓励——我做得好的地方是什么？
+
+准备好了，请开始场景！<button class="copy-btn" onclick="cp('s02',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">替换场景即用</span><span class="tag">AI扮演角色</span><span class="tag">对话后反馈</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt S-03</span><span class="card-title">自我介绍专项训练（开口第一课）</span></div>
+    <div class="card-desc">自我介绍是最高频的口语场景，也是打好开口信心的第一步。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s03">请帮我练习英语自我介绍：
+
+【第一步：帮我写稿】
+根据以下信息，帮我写一段30秒的英语自我介绍：
+- 姓名：[填写]
+- 年级：[填写]
+- 兴趣爱好：[填写2-3个]
+- 一个有意思的小特点：[填写]
+
+要求：句子不要太复杂，适合朗读，有亮点不平淡
+
+【第二步：升级版本】
+在第一版基础上，做一个「高分版」自我介绍（60秒）：
+- 加入一个具体的故事或例子
+- 用上至少一个复杂句（从句或非谓语）
+- 结尾加一句能引发对话的问句
+
+【第三步：让我练习】
+出3道追问题（面试官或同学可能问的），让我用英文回答
+每题我回答后，你告诉我：表达有没有更好的方式？<button class="copy-btn" onclick="cp('s03',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">自我介绍</span><span class="tag">30秒+60秒版本</span><span class="tag">追问练习</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bam">Prompt S-04</span><span class="card-title">图片描述练习（中考高考口语题型）</span></div>
+    <div class="card-desc">「看图说话」是中高考口语最常见题型，有固定的描述框架。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s04">请教我「图片描述」的口语答题方法，并给我练习题：
+
+【第一步：描述框架】
+图片描述的标准结构（考官最希望听到的顺序）：
+① 整体场景（在哪里？什么时间？）
+② 主要人物/事物（谁在做什么？）
+③ 细节补充（表情/颜色/数量/背景）
+④ 个人推测或感受（这张图可能想表达什么？）
+
+给出每个部分的常用句型（各3句）
+
+【第二步：生成一道练习题】
+用文字描述一张图片（初中水平场景，如：公园里的一家人野餐）
+让我用英文描述，打出我的答案
+
+【第三步：批改我的描述】
+- 内容完整性：是否覆盖了四个部分？
+- 语言准确性：有没有语法错误？
+- 表达丰富度：有没有单调重复的词？
+- 给出参考描述（标准答案水平）<button class="copy-btn" onclick="cp('s04',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">图片描述框架</span><span class="tag">四步结构</span><span class="tag">含参考答案</span></div>
+  </div>
+</div>
+
+<!-- ── FLUENCY ── -->
+<div id="fluency" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">FLUENCY</div>
+    <div class="sec-title">流利度专项训练</div>
+    <div class="sec-desc">消除中式英语、填充词、停顿过长，让表达更自然流畅</div>
+  </div>
+
+  <div class="note">流利不等于「说得快」，而是「说得自然」——不需要思考就能说出来，即使慢一点也不显得卡顿。这需要大量的重复输出练习。</div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt S-05</span><span class="card-title">中式英语纠错专训</span></div>
+    <div class="card-desc">把你常说的英语发给 AI，找出所有「中式表达」并学习地道替换。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s05">请帮我纠正以下中式英语表达，并教我地道的说法：
+
+【我常说的表达】（写出你平时说英语时的句子，哪怕不完整也没关系）：
+1. [填入，如：I very like play basketball.]
+2. [填入]
+3. [填入]
+（可多写几条）
+
+请对每句话：
+① 指出哪里是「中式英语」（直译中文的痕迹）
+② 给出地道的英语表达（2个版本：正式和口语）
+③ 解释为什么中国人容易这样说（中英思维差异）
+
+最后：总结我最需要注意的3个「中式思维陷阱」
+并给出5对「中式 vs 地道」表达对比练习，让我选出地道的那个<button class="copy-btn" onclick="cp('s05',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">中式英语纠错</span><span class="tag">地道表达</span><span class="tag">思维差异分析</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt S-06</span><span class="card-title">即兴表达训练（消除停顿和填充词）</span></div>
+    <div class="card-desc">通过限时即兴表达练习，建立「边想边说」的口语输出习惯。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s06">请给我做「即兴表达」专项练习，帮我减少停顿和填充词：
+
+【我的问题】：[如：说到一半想不起词就卡住 / 经常说 um、uh、so]
+
+【训练方式】
+请给我出5道「30秒即兴表达」题目：
+- 题目要求：我要在30秒内持续说英语，不能停顿超过3秒
+- 话题范围：贴近初中/高中生活，不要太难
+
+【题目类型要求】
+① 描述类：描述一个你熟悉的地方
+② 观点类：你认为手机对学习有帮助还是有害？
+③ 故事类：讲一件让你印象深刻的事
+④ 比较类：比较你喜欢的两种运动或爱好
+⑤ 假设类：如果你有一天可以做任何事，你会做什么？
+
+每道题：我打出我的回答 → 你分析：
+- 句子长度是否足够（平均每句超过8个词？）
+- 填充词出现几次？建议用什么替代？
+- 整体连贯性如何？
+- 给出「更流利版本」的示范<button class="copy-btn" onclick="cp('s06',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">即兴表达</span><span class="tag">5种题型</span><span class="tag">填充词分析</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bam">Prompt S-07</span><span class="card-title">句子扩展训练（从短句到长句）</span></div>
+    <div class="card-desc">很多学生只会说「I like it.」这类极短句，AI 教你一步步把短句变长。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s07">请教我「句子扩展」技巧，帮我从说短句升级到说长句：
+
+【示范扩展】
+从「I like basketball.」开始，展示5个扩展层次：
+第1层（加时间/地点）：I like playing basketball after school.
+第2层（加原因）：...because it helps me relax.
+第3层（加对比）：Unlike studying, basketball makes me feel free.
+第4层（加从句）：Basketball is a sport that I've loved since I was eight.
+第5层（加故事）：I still remember the first time I scored a point...
+
+【然后让我练习】
+给我3个简单句：
+1. I have a dog.
+2. My school is big.
+3. I like summer.
+
+每句话让我尝试「第4层扩展」（加从句或故事细节）
+我打出我的扩展版本，你来批改并给出更好的版本<button class="copy-btn" onclick="cp('s07',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">句子扩展</span><span class="tag">五层递进</span><span class="tag">短句升级</span></div>
+  </div>
+</div>
+
+<!-- ── PRONUNCIATION ── -->
+<div id="pronunciation" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">PRONUNCIATION</div>
+    <div class="sec-title">发音纠错</div>
+    <div class="sec-desc">AI 无法听声音，但能用文字精准描述发音方法和常见错误</div>
+  </div>
+
+  <div class="tip">AI 的局限：它无法直接听你说话。解决方法：①用文字描述你的发音问题 ②把你认为自己发错的音告诉它 ③让它用文字+口型描述纠正方法，再配合视频资源练习。</div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt S-08</span><span class="card-title">中国学生高频发音错误全解析</span></div>
+    <div class="card-desc">不用等出错，提前了解中国学生最容易发错的音，主动规避。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s08">请系统讲解中国学生英语发音的高频错误：
+
+【第一部分：最容易发错的10个音标】
+对每个音标：
+- 正确发音方法（口型+舌位+气流，用文字描述）
+- 中国学生通常错发成什么音
+- 最容易出错的5个高频词
+- 一个区分方法（最小对立音对练习）
+
+重点关注：
+/θ/ vs /s/（think vs sink）
+/v/ vs /w/（very vs wary）
+/æ/ vs /e/（bad vs bed）
+/ɪ/ vs /iː/（bit vs beat）
+/r/ 的美式发音（不是汉语的「r」）
+
+【第二部分：连读和弱读规则】
+3大连读规律（辅音+元音/辅音+辅音/省略）
+各举3个口语中常见的例子
+
+【第三部分：语调规则】
+升调 vs 降调：什么情况用哪种？
+中国学生最常见的语调问题是什么？<button class="copy-btn" onclick="cp('s08',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">10个高频错误音</span><span class="tag">连读弱读</span><span class="tag">语调规则</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt S-09</span><span class="card-title">针对我的发音问题专项训练</span></div>
+    <div class="card-desc">描述你的具体发音困惑，AI 给出精准的文字版训练方案。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s09">请帮我解决以下发音问题：
+
+【我的具体问题】：[填入，如：我分不清 /θ/ 和 /s/，总是把 think 说成 sink]
+
+请完成：
+
+【精准讲解】
+这两个音的区别是什么？（从口型/舌位/气流三个维度描述）
+用一个「身体动作」的比喻帮我记住区别（比如：/θ/ 像咬住舌尖说s）
+
+【最小对立音练习列表】
+列出20对含这两个音的单词对：
+左列（含/θ/）| 右列（含/s/）
+让我逐对朗读，感受区别
+
+【高频词重点练习】
+含这个发音的初中高频词（20个）
+分成三组：容易/中等/较难
+
+【自检方法】
+我怎么知道自己发对了？有什么可以在家里自测的方法？
+
+【配套资源建议】
+可以在哪里找到专门练这个音的视频或材料？<button class="copy-btn" onclick="cp('s09',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">针对具体问题</span><span class="tag">最小对立音</span><span class="tag">自检方法</span></div>
+  </div>
+</div>
+
+<!-- ── EXAM ── -->
+<div id="exam" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">EXAM</div>
+    <div class="sec-title">考试口语专项</div>
+    <div class="sec-desc">中考口语测试 · 高中英语口试，模拟考官，按评分标准练习</div>
+  </div>
+
+  <div class="exam-grid">
+    <div class="exam-card">
+      <div class="exam-label">中考口语</div>
+      <div class="exam-title">朗读+问答+图描</div>
+      <div class="exam-desc">各地题型略有差异，核心：朗读流利度、问题回答完整度、图片描述条理性</div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-label">高中英语口试</div>
+      <div class="exam-title">对话+短文+即兴</div>
+      <div class="exam-desc">通常包含日常对话、短文朗读、话题即兴表达，部分省份有考官追问</div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-label">英语演讲</div>
+      <div class="exam-title">学校/比赛演讲</div>
+      <div class="exam-desc">开场抓眼球、主体有逻辑、结尾有力量，AI 帮你写稿+练稿</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt S-10</span><span class="card-title">模拟中考口语考官（全流程练习）</span></div>
+    <div class="card-desc">AI 扮演考官，按中考口语格式出题，练完给评分和建议。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s10">请扮演中考英语口语考官，给我进行一次模拟口语测试：
+
+【我的地区/题型】：[如：广东省中考口语 / 不确定可以用通用题型]
+【我的年级】：[初三]
+
+【考试格式（通用版）】
+第一节：朗读短文（我把短文打出来大声朗读，再把自己认为发音有问题的词告诉你）
+第二节：根据图片/情景回答问题（你描述一个情景，我来回答）
+第三节：话题表达（你给一个话题，我说30-45秒）
+
+【评分标准】
+请按以下维度评分（每项5分）：
+- 语音语调（发音是否清晰，语调是否自然）
+- 语言准确性（语法和词汇是否正确）
+- 内容完整性（是否充分回答了问题）
+- 流利度（是否流畅，停顿是否过多）
+
+开始测试，请出第一节的朗读材料：<button class="copy-btn" onclick="cp('s10',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">模拟考官</span><span class="tag">四维评分</span><span class="tag">全流程练习</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bt">Prompt S-11</span><span class="card-title">英语演讲稿写作 + 练习指导</span></div>
+    <div class="card-desc">学校英语演讲比赛或课堂展示，AI 帮你从零写出一篇有感染力的演讲稿。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s11">请帮我准备一篇英语演讲：
+
+【演讲主题】：[填入，如：My Dream / Environmental Protection / The Power of Reading]
+【时长要求】：[3分钟 / 5分钟]
+【场合】：[班级 / 年级比赛 / 英语角]
+【我的水平】：[初二 / 高一]
+
+【第一步：写演讲稿】
+结构要求：
+- 开场（金句/问题/故事，10秒内抓住听众）
+- 主体（3个核心观点，每个配一个具体例子或故事）
+- 结尾（呼吁行动或留下记忆点，呼应开场）
+
+语言要求：
+- 句式有变化（不全是简单句）
+- 有1-2句名言（真实或合理创作）
+- 用词生动，避免过于平淡
+
+【第二步：标注练习重点】
+在稿子里标出：
+★ 需要重音的词
+↑ 需要升调的地方
+/ 需要停顿的地方
+
+【第三步：给我练习建议】
+演讲时容易犯的3个错误是什么？如何避免？<button class="copy-btn" onclick="cp('s11',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">演讲稿写作</span><span class="tag">结构模板</span><span class="tag">朗读标注</span></div>
+  </div>
+</div>
+
+<!-- ── DAILY ── -->
+<div id="daily" class="panel">
+  <div class="sec-head">
+    <div class="sec-tag">DAILY PLAN</div>
+    <div class="sec-title">每日口语训练计划</div>
+    <div class="sec-desc">每天15分钟，可持续的口语练习节奏</div>
+  </div>
+
+  <div class="tip">口语进步的关键是「每天少量」而不是「偶尔大量」。每天15分钟的坚持，比每周一次两小时效果好3倍以上。</div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge ba">Prompt S-12</span><span class="card-title">个性化口语周计划生成</span></div>
+    <div class="card-desc">把你的情况告诉 AI，生成一份切实可行、每天不超过20分钟的口语训练方案。</div>
+    <div class="prompt-wrap">
+      <div class="prompt-lbl">// PROMPT · 点击右上角复制</div>
+      <div class="prompt-box" id="s12">请为我制定一份个性化英语口语训练周计划：
+
+【我的情况】
+- 年级：[填写]
+- 当前口语水平：[几乎不敢开口 / 能说简单句 / 能基本交流]
+- 最大问题：[填写，如：发音 / 词汇量不够用 / 语法不对]
+- 每天可用时间：[15分钟 / 20分钟]
+- 有没有练习伙伴：[有/没有]
+- 近期目标：[中考备考 / 日常交流 / 英语演讲比赛]
+
+【计划要求】
+- 7天计划，每天任务具体到：练什么 + 用哪个Prompt + 花几分钟
+- 每天任务量要现实可执行（不要贪多）
+- 周末安排一次「综合练习」（把本周学的整合起来）
+- 说明：怎么判断这一天练完了算「合格」？
+
+【额外要求】
+- 推荐每天可以配合使用的免费APP或资源（各1个）
+- 给出「最低任务」版本（忙碌的天，至少做什么？）<button class="copy-btn" onclick="cp('s12',this)">复制</button></div>
+    </div>
+    <div class="tags"><span class="tag">个性化计划</span><span class="tag">每天15-20分钟</span><span class="tag">含最低任务版</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="badge bb">使用建议</span><span class="card-title">如何最大化 AI 口语练习效果</span></div>
+    <div class="card-desc">
+      <div class="step-row"><div class="step-dot">1</div><div class="step-text">先说出来，再打字。不要直接用中文构思英文句子——先开口说，哪怕说错，再把说出来的话打给 AI 批改。</div></div>
+      <div class="step-row"><div class="step-dot">2</div><div class="step-text">要求 AI 示范朗读。让 AI 给出「地道版表达」后，大声朗读5遍，建立肌肉记忆。</div></div>
+      <div class="step-row"><div class="step-dot">3</div><div class="step-text">录音自听。用手机录下自己说英语，回放时会发现平时没注意的问题，再发给 AI 描述问题请教。</div></div>
+      <div class="step-row"><div class="step-dot">4</div><div class="step-text">积累「救场表达」。让 AI 整理10个「当你不知道怎么说时的过渡句型」，背熟，真正对话时就不会卡壳。</div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>AI英语工具集 · 口语模块 · Prompt S-01 至 S-12 · 共12个</footer>
+
+<script>
+function showTab(id,idx){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  window.scrollTo({top:document.querySelector('.tab-bar').offsetTop-60,behavior:'smooth'});
+}
+function cp(id,btn){
+  const t=document.getElementById(id).innerText.replace(/复制|已复制/g,'').trim();
+  navigator.clipboard.writeText(t).catch(()=>{
+    const a=document.createElement('textarea');a.value=t;
+    document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);
+  });
+  btn.textContent='已复制';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent='复制';btn.classList.remove('ok')},2000);
+}
+</script>
+</body>
+</html>
